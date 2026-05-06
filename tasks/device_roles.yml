@@ -1,0 +1,15 @@
+---
+- name: Load device_roles var file
+  ansible.builtin.include_vars:
+    file: "{{ role_path }}/vars/device_roles.yml"
+
+- name: Ensure device_roles exist
+  netbox.netbox.netbox_device_role:
+    netbox_url: "{{ netbox_url }}"
+    netbox_token: "{{ netbox_api_token }}"
+    validate_certs: "{{ netbox_validate_certs }}"
+    data: "{{ item }}"
+    state: present
+  loop: "{{ device_roles | default([]) }}"
+  loop_control:
+    label: "{{ item.name }}"

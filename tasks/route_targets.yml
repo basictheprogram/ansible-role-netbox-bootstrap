@@ -1,0 +1,15 @@
+---
+- name: Load route_targets var file
+  ansible.builtin.include_vars:
+    file: "{{ role_path }}/vars/route_targets.yml"
+
+- name: Ensure route_targets exist
+  netbox.netbox.netbox_route_target:
+    netbox_url: "{{ netbox_url }}"
+    netbox_token: "{{ netbox_api_token }}"
+    validate_certs: "{{ netbox_validate_certs }}"
+    data: "{{ item }}"
+    state: present
+  loop: "{{ route_targets | default([]) }}"
+  loop_control:
+    label: "{{ item.name }}"

@@ -1,0 +1,15 @@
+---
+- name: Load site_groups var file
+  ansible.builtin.include_vars:
+    file: "{{ role_path }}/vars/site_groups.yml"
+
+- name: Ensure site_groups exist
+  netbox.netbox.netbox_site_group:
+    netbox_url: "{{ netbox_url }}"
+    netbox_token: "{{ netbox_api_token }}"
+    validate_certs: "{{ netbox_validate_certs }}"
+    data: "{{ item }}"
+    state: present
+  loop: "{{ site_groups | default([]) }}"
+  loop_control:
+    label: "{{ item.name }}"

@@ -1,0 +1,19 @@
+---
+- name: Load tags var file
+  ansible.builtin.include_vars:
+    file: "{{ role_path }}/vars/tags.yml"
+
+- name: Ensure tags exist
+  netbox.netbox.netbox_tag:
+    netbox_url: "{{ netbox_url }}"
+    netbox_token: "{{ netbox_api_token }}"
+    validate_certs: "{{ netbox_validate_certs }}"
+    data:
+      name: "{{ item.name }}"
+      slug: "{{ item.slug }}"
+      color: "{{ item.color | default('9e9e9e') }}"
+      description: "{{ item.description | default('') }}"
+    state: present
+  loop: "{{ netbox_tags | default([]) }}"
+  loop_control:
+    label: "{{ item.name }}"

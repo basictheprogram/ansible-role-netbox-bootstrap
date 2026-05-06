@@ -1,0 +1,15 @@
+---
+- name: Load aggregates var file
+  ansible.builtin.include_vars:
+    file: "{{ role_path }}/vars/aggregates.yml"
+
+- name: Ensure aggregates exist
+  netbox.netbox.netbox_aggregate:
+    netbox_url: "{{ netbox_url }}"
+    netbox_token: "{{ netbox_api_token }}"
+    validate_certs: "{{ netbox_validate_certs }}"
+    data: "{{ item }}"
+    state: present
+  loop: "{{ aggregates | default([]) }}"
+  loop_control:
+    label: "{{ item.prefix }}"

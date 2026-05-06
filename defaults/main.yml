@@ -1,0 +1,39 @@
+---
+# ansible-role-netbox-bootstrap — defaults
+# Override these in your playbook vars or group_vars.
+
+# --- Connection ---
+netbox_url: "https://netbox.example.com"
+netbox_api_token: "{{ vault_netbox_api_token }}"
+netbox_validate_certs: true
+
+# --- Section toggles ---
+# Set any to false to skip that section entirely on a run.
+netbox_bootstrap_groups: true
+netbox_bootstrap_users: true
+netbox_bootstrap_permissions: true
+netbox_bootstrap_tags: true
+netbox_bootstrap_custom_fields: true
+netbox_bootstrap_custom_links: true
+netbox_bootstrap_webhooks: true
+netbox_bootstrap_export_templates: true
+netbox_bootstrap_tenant_groups: true
+netbox_bootstrap_tenants: true
+netbox_bootstrap_regions: true
+netbox_bootstrap_site_groups: true
+netbox_bootstrap_sites: true
+netbox_bootstrap_locations: true
+netbox_bootstrap_rack_roles: true
+netbox_bootstrap_device_roles: true
+netbox_bootstrap_platforms: true
+netbox_bootstrap_rirs: true
+netbox_bootstrap_aggregates: true
+netbox_bootstrap_vrfs: true
+netbox_bootstrap_route_targets: true
+netbox_bootstrap_vlan_groups: true
+
+# --- User bootstrap ---
+# Users are created with this password on first bootstrap.
+# They should change it on first login.
+# Store the actual value in Ansible Vault as vault_netbox_bootstrap_default_password.
+netbox_bootstrap_default_password: "{{ vault_netbox_bootstrap_default_password }}"

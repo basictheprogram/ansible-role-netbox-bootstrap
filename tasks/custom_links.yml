@@ -1,0 +1,35 @@
+---
+- name: Load custom_links var file
+  ansible.builtin.include_vars:
+    file: "{{ role_path }}/vars/custom_links.yml"
+
+- name: Fetch existing custom links
+  ansible.builtin.uri:
+    url: "{{ netbox_url }}/api/extras/custom-links/?limit=500"
+    method: GET
+    headers:
+      Authorization: "Token {{ netbox_api_token }}"
+    validate_certs: "{{ netbox_validate_certs }}"
+  register: _existing_custom_links
+
+- name: Build list of existing custom link names
+  ansible.builtin.set_fact:
+    _existing_custom_link_names: >-
+      {{ _existing_custom_links.json.results | map(attribute='name') | list }}
+
+- name: Ensure custom links exist
+  ansible.builtin.uri:
+    url: "{{ netbox_url }}/api/extras/custom-links/"
+    method: POST
+    headers:
+      Authorization: "Token {{ netbox_api_token }}"
+      Content-Type: "application/json"
+    body_format: json
+    body: "{{ item }}"
+    status_code: [201]
+    validate_certs: "{{ netbox_validate_certs }}"
+  loop: "{{ custom_links | default([]) }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when: item.name not in _existing_custom_link_names
+  changed_when: true

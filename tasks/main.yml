@@ -1,0 +1,100 @@
+---
+# ansible-role-netbox-bootstrap — task orchestrator
+# Sections are included in strict dependency order. Do not reorder.
+# See DESIGN.md §6 for dependency notes.
+
+- name: Preflight checks
+  ansible.builtin.include_tasks: preflight.yml
+
+# --- Tier 1: Users & Access ---
+- name: Bootstrap groups
+  ansible.builtin.include_tasks: groups.yml
+  when: netbox_bootstrap_groups | bool
+
+- name: Bootstrap users
+  ansible.builtin.include_tasks: users.yml
+  when: netbox_bootstrap_users | bool
+
+- name: Bootstrap permissions
+  ansible.builtin.include_tasks: permissions.yml
+  when: netbox_bootstrap_permissions | bool
+
+# --- Tier 2: Extras ---
+- name: Bootstrap tags
+  ansible.builtin.include_tasks: tags.yml
+  when: netbox_bootstrap_tags | bool
+
+- name: Bootstrap custom fields
+  ansible.builtin.include_tasks: custom_fields.yml
+  when: netbox_bootstrap_custom_fields | bool
+
+- name: Bootstrap custom links
+  ansible.builtin.include_tasks: custom_links.yml
+  when: netbox_bootstrap_custom_links | bool
+
+- name: Bootstrap webhooks
+  ansible.builtin.include_tasks: webhooks.yml
+  when: netbox_bootstrap_webhooks | bool
+
+- name: Bootstrap export templates
+  ansible.builtin.include_tasks: export_templates.yml
+  when: netbox_bootstrap_export_templates | bool
+
+# --- Tier 3: Tenancy ---
+- name: Bootstrap tenant groups
+  ansible.builtin.include_tasks: tenant_groups.yml
+  when: netbox_bootstrap_tenant_groups | bool
+
+- name: Bootstrap tenants
+  ansible.builtin.include_tasks: tenants.yml
+  when: netbox_bootstrap_tenants | bool
+
+# --- Tier 4: DCIM Structure ---
+- name: Bootstrap regions
+  ansible.builtin.include_tasks: regions.yml
+  when: netbox_bootstrap_regions | bool
+
+- name: Bootstrap site groups
+  ansible.builtin.include_tasks: site_groups.yml
+  when: netbox_bootstrap_site_groups | bool
+
+- name: Bootstrap sites
+  ansible.builtin.include_tasks: sites.yml
+  when: netbox_bootstrap_sites | bool
+
+- name: Bootstrap locations
+  ansible.builtin.include_tasks: locations.yml
+  when: netbox_bootstrap_locations | bool
+
+- name: Bootstrap rack roles
+  ansible.builtin.include_tasks: rack_roles.yml
+  when: netbox_bootstrap_rack_roles | bool
+
+- name: Bootstrap device roles
+  ansible.builtin.include_tasks: device_roles.yml
+  when: netbox_bootstrap_device_roles | bool
+
+- name: Bootstrap platforms
+  ansible.builtin.include_tasks: platforms.yml
+  when: netbox_bootstrap_platforms | bool
+
+# --- Tier 5: IPAM Structure ---
+- name: Bootstrap RIRs
+  ansible.builtin.include_tasks: rirs.yml
+  when: netbox_bootstrap_rirs | bool
+
+- name: Bootstrap aggregates
+  ansible.builtin.include_tasks: aggregates.yml
+  when: netbox_bootstrap_aggregates | bool
+
+- name: Bootstrap VRFs
+  ansible.builtin.include_tasks: vrfs.yml
+  when: netbox_bootstrap_vrfs | bool
+
+- name: Bootstrap route targets
+  ansible.builtin.include_tasks: route_targets.yml
+  when: netbox_bootstrap_route_targets | bool
+
+- name: Bootstrap VLAN groups
+  ansible.builtin.include_tasks: vlan_groups.yml
+  when: netbox_bootstrap_vlan_groups | bool

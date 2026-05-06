@@ -1,0 +1,15 @@
+---
+- name: Load vrfs var file
+  ansible.builtin.include_vars:
+    file: "{{ role_path }}/vars/vrfs.yml"
+
+- name: Ensure vrfs exist
+  netbox.netbox.netbox_vrf:
+    netbox_url: "{{ netbox_url }}"
+    netbox_token: "{{ netbox_api_token }}"
+    validate_certs: "{{ netbox_validate_certs }}"
+    data: "{{ item }}"
+    state: present
+  loop: "{{ vrfs | default([]) }}"
+  loop_control:
+    label: "{{ item.name }}"

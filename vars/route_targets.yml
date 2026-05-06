@@ -1,0 +1,4 @@
+---
+# route_targets — populated by scripts/export_netbox.py
+# Do not hand-edit; re-run the export script to update.
+route_targets: []

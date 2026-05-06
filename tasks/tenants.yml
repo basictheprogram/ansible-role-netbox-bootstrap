@@ -1,0 +1,15 @@
+---
+- name: Load tenants var file
+  ansible.builtin.include_vars:
+    file: "{{ role_path }}/vars/tenants.yml"
+
+- name: Ensure tenants exist
+  netbox.netbox.netbox_tenant:
+    netbox_url: "{{ netbox_url }}"
+    netbox_token: "{{ netbox_api_token }}"
+    validate_certs: "{{ netbox_validate_certs }}"
+    data: "{{ item }}"
+    state: present
+  loop: "{{ tenants | default([]) }}"
+  loop_control:
+    label: "{{ item.name }}"

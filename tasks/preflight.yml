@@ -1,0 +1,77 @@
+---
+# preflight.yml — validate prerequisites before any bootstrap tasks run.
+# Included first by main.yml. Fails fast with actionable messages.
+
+- name: "Preflight | Assert minimum Ansible version"
+  ansible.builtin.assert:
+    that:
+      - ansible_version.full is version('2.20', '>=')
+    fail_msg: >-
+      Ansible >= 2.20 is required. Found {{ ansible_version.full }}.
+      Upgrade with: pip install --upgrade ansible
+    quiet: true
+
+- name: "Preflight | Assert netbox_url is defined and non-empty"
+  ansible.builtin.assert:
+    that:
+      - netbox_url is defined
+      - netbox_url | length > 0
+      - netbox_url is match("^https?://")
+    fail_msg: >-
+      netbox_url is not set or does not look like a URL.
+      Expected: https://netbox.example.com
+      Set it in your playbook vars or group_vars.
+    quiet: true
+
+- name: "Preflight | Assert netbox_api_token is defined and non-empty"
+  ansible.builtin.assert:
+    that:
+      - netbox_api_token is defined
+      - netbox_api_token | length > 0
+    fail_msg: >-
+      netbox_api_token is not set.
+      Store the token in Ansible Vault as vault_netbox_api_token and reference
+      it via netbox_api_token in your playbook vars or group_vars.
+    quiet: true
+
+- name: "Preflight | Assert netbox_bootstrap_default_password is set (required when bootstrapping users)"
+  ansible.builtin.assert:
+    that:
+      - netbox_bootstrap_default_password is defined
+      - netbox_bootstrap_default_password | length > 0
+    fail_msg: >-
+      netbox_bootstrap_default_password must be set when netbox_bootstrap_users is true.
+      Store it in Ansible Vault as vault_netbox_bootstrap_default_password.
+    quiet: true
+  when: netbox_bootstrap_users | bool
+
+- name: "Preflight | Test NetBox API connectivity"
+  ansible.builtin.uri:
+    url: "{{ netbox_url }}/api/"
+    method: GET
+    headers:
+      Authorization: "Token {{ netbox_api_token }}"
+    validate_certs: "{{ netbox_validate_certs }}"
+    status_code: 200
+    timeout: 10
+  register: _preflight_api
+  failed_when: _preflight_api.status != 200
+  no_log: true
+
+- name: "Preflight | Assert NetBox API responded successfully"
+  ansible.builtin.assert:
+    that:
+      - _preflight_api.status == 200
+    fail_msg: >-
+      Could not reach the NetBox API at {{ netbox_url }}/api/.
+      Check that netbox_url is correct, the instance is running, and the token is valid.
+    quiet: true
+
+- name: "Preflight | Assert netbox.netbox collection is installed"
+  ansible.builtin.assert:
+    that:
+      - lookup('community.general.collection_version', 'netbox.netbox') is not none
+    fail_msg: >-
+      The netbox.netbox collection is required but not installed.
+      Run: ansible-galaxy collection install netbox.netbox
+    quiet: true

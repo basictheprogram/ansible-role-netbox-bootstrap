@@ -1,0 +1,27 @@
+---
+dependencies: []
+
+galaxy_info:
+  namespace: realtime
+  role_name: netbox_bootstrap
+  author: "Bob Tanner"
+  description: "Idempotent bootstrap of a fresh NetBox instance from declarative YAML variable files. Covers users, groups, permissions, custom fields, tags, webhooks, DCIM
+    structure, IPAM structure, and tenancy. Companion export script snapshots any live NetBox instance into the var files."
+  company: "Real Time Enterprises, Inc."
+  license: "MIT"
+  min_ansible_version: "2.20"
+  platforms:
+    - name: Debian
+      versions:
+        - bookworm
+        - trixie
+    - name: Ubuntu
+      versions:
+        - noble
+        - resolute
+  galaxy_tags:
+    - netbox
+    - networking
+    - ipam
+    - dcim
+    - bootstrap

@@ -1,0 +1,25 @@
+---
+# Users — netbox.netbox.netbox_user where reliable; falls back to uri for
+# group membership assignment which the module handles inconsistently.
+- name: Load users var file
+  ansible.builtin.include_vars:
+    file: "{{ role_path }}/vars/users.yml"
+
+- name: Ensure local users exist
+  netbox.netbox.netbox_user:
+    netbox_url: "{{ netbox_url }}"
+    netbox_token: "{{ netbox_api_token }}"
+    validate_certs: "{{ netbox_validate_certs }}"
+    data:
+      username: "{{ item.username }}"
+      password: "{{ netbox_bootstrap_default_password }}"
+      first_name: "{{ item.first_name | default('') }}"
+      last_name: "{{ item.last_name | default('') }}"
+      email: "{{ item.email | default('') }}"
+      is_staff: "{{ item.is_staff | default(false) }}"
+      is_active: "{{ item.is_active | default(true) }}"
+      is_superuser: "{{ item.is_superuser | default(false) }}"
+    state: present
+  loop: "{{ users | default([]) }}"
+  loop_control:
+    label: "{{ item.username }}"

@@ -1,0 +1,37 @@
+---
+# Permissions — uri only; no collection module exists for object permissions.
+# Requires groups to already exist (Tier 1 dependency).
+- name: Load permissions var file
+  ansible.builtin.include_vars:
+    file: "{{ role_path }}/vars/permissions.yml"
+
+- name: Fetch existing permissions (for idempotency check)
+  ansible.builtin.uri:
+    url: "{{ netbox_url }}/api/users/permissions/?limit=500"
+    method: GET
+    headers:
+      Authorization: "Token {{ netbox_api_token }}"
+    validate_certs: "{{ netbox_validate_certs }}"
+  register: _existing_permissions
+
+- name: Build list of existing permission names
+  ansible.builtin.set_fact:
+    _existing_permission_names: >-
+      {{ _existing_permissions.json.results | map(attribute='name') | list }}
+
+- name: Ensure object permissions exist
+  ansible.builtin.uri:
+    url: "{{ netbox_url }}/api/users/permissions/"
+    method: POST
+    headers:
+      Authorization: "Token {{ netbox_api_token }}"
+      Content-Type: "application/json"
+    body_format: json
+    body: "{{ item }}"
+    status_code: [201]
+    validate_certs: "{{ netbox_validate_certs }}"
+  loop: "{{ permissions | default([]) }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when: item.name not in _existing_permission_names
+  changed_when: true

@@ -1,0 +1,5 @@
+---
+# netbox_tags — populated by scripts/export_netbox.py
+# Variable is named netbox_tags (not tags) because 'tags' is a reserved word in Ansible.
+# Do not hand-edit; re-run the export script to update.
+netbox_tags: []

@@ -1,0 +1,35 @@
+---
+- name: Load export_templates var file
+  ansible.builtin.include_vars:
+    file: "{{ role_path }}/vars/export_templates.yml"
+
+- name: Fetch existing export templates
+  ansible.builtin.uri:
+    url: "{{ netbox_url }}/api/extras/export-templates/?limit=500"
+    method: GET
+    headers:
+      Authorization: "Token {{ netbox_api_token }}"
+    validate_certs: "{{ netbox_validate_certs }}"
+  register: _existing_export_templates
+
+- name: Build list of existing export template names
+  ansible.builtin.set_fact:
+    _existing_export_template_names: >-
+      {{ _existing_export_templates.json.results | map(attribute='name') | list }}
+
+- name: Ensure export templates exist
+  ansible.builtin.uri:
+    url: "{{ netbox_url }}/api/extras/export-templates/"
+    method: POST
+    headers:
+      Authorization: "Token {{ netbox_api_token }}"
+      Content-Type: "application/json"
+    body_format: json
+    body: "{{ item }}"
+    status_code: [201]
+    validate_certs: "{{ netbox_validate_certs }}"
+  loop: "{{ export_templates | default([]) }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when: item.name not in _existing_export_template_names
+  changed_when: true
