@@ -2,3 +2,5 @@ PyYAML>=6.0
 click>=8.0
 environs>=9.5
 pynetbox>=7.0
+python-dotenv>=1.0
+rich>=13.0

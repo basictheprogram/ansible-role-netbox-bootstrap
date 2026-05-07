@@ -2,6 +2,7 @@
 - name: Load custom_links var file
   ansible.builtin.include_vars:
     file: "{{ role_path }}/vars/custom_links.yml"
+  when: custom_links is not defined
 
 - name: Fetch existing custom links
   ansible.builtin.uri:

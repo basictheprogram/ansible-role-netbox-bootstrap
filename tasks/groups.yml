@@ -3,6 +3,7 @@
 - name: Load groups var file
   ansible.builtin.include_vars:
     file: "{{ role_path }}/vars/groups.yml"
+  when: groups is mapping
 
 - name: Ensure groups exist
   ansible.builtin.uri:

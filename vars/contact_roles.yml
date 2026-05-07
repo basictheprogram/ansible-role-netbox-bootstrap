@@ -1,0 +1,22 @@
+---
+# contact_roles — populated by scripts/export_netbox.py
+# Do not hand-edit; re-run the export script to update.
+contact_roles:
+  - name: Technical
+    slug: technical
+    description: Primary technical point of contact
+  - name: Administrative
+    slug: administrative
+    description: Administrative and organizational contact
+  - name: Billing
+    slug: billing
+    description: Billing and financial contact
+  - name: NOC
+    slug: noc
+    description: Network Operations Center — operational escalation contact
+  - name: Security
+    slug: security
+    description: Security incidents and vulnerability disclosure contact
+  - name: Vendor
+    slug: vendor
+    description: Hardware or software vendor representative

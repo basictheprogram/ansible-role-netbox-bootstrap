@@ -1,4 +1,2 @@
 ---
-# custom_links — populated by scripts/export_netbox.py
-# Do not hand-edit; re-run the export script to update.
 custom_links: []

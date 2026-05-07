@@ -2,6 +2,7 @@
 - name: Load regions var file
   ansible.builtin.include_vars:
     file: "{{ role_path }}/vars/regions.yml"
+  when: regions is not defined
 
 - name: Ensure regions exist
   netbox.netbox.netbox_region:

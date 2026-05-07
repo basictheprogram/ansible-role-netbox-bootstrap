@@ -2,6 +2,7 @@
 - name: Load platforms var file
   ansible.builtin.include_vars:
     file: "{{ role_path }}/vars/platforms.yml"
+  when: platforms is not defined
 
 - name: Ensure platforms exist
   netbox.netbox.netbox_platform:

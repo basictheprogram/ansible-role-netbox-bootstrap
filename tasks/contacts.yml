@@ -1,0 +1,17 @@
+---
+# contact_groups must exist before contacts that reference them (Tier 3 dependency).
+- name: Load contacts var file
+  ansible.builtin.include_vars:
+    file: "{{ role_path }}/vars/contacts.yml"
+  when: contacts is not defined
+
+- name: Ensure contacts exist
+  netbox.netbox.netbox_contact:
+    netbox_url: "{{ netbox_url }}"
+    netbox_token: "{{ netbox_api_token }}"
+    validate_certs: "{{ netbox_validate_certs }}"
+    data: "{{ item }}"
+    state: present
+  loop: "{{ contacts | default([]) }}"
+  loop_control:
+    label: "{{ item.name }}"

@@ -2,6 +2,7 @@
 - name: Load rirs var file
   ansible.builtin.include_vars:
     file: "{{ role_path }}/vars/rirs.yml"
+  when: rirs is not defined
 
 - name: Ensure rirs exist
   netbox.netbox.netbox_rir:

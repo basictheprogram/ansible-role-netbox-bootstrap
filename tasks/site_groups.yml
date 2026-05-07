@@ -2,6 +2,7 @@
 - name: Load site_groups var file
   ansible.builtin.include_vars:
     file: "{{ role_path }}/vars/site_groups.yml"
+  when: site_groups is not defined
 
 - name: Ensure site_groups exist
   netbox.netbox.netbox_site_group:

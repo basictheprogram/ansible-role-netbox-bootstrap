@@ -1,0 +1,35 @@
+---
+# ipam_roles — populated by scripts/export_netbox.py
+# Do not hand-edit; re-run the export script to update.
+# These roles classify prefixes and VLANs by function.
+# Weight controls display order — lower numbers sort first.
+ipam_roles:
+  - name: Management
+    slug: management
+    weight: 100
+    description: "Out-of-band management, IPMI/iDRAC, switch management VLANs"
+
+  - name: Loopback
+    slug: loopback
+    weight: 200
+    description: "Loopback address ranges"
+
+  - name: Infrastructure
+    slug: infrastructure
+    weight: 300
+    description: "Hypervisor cluster networks, storage networks, internal services"
+
+  - name: Production
+    slug: production
+    weight: 400
+    description: "General workload and server subnets"
+
+  - name: Transit
+    slug: transit
+    weight: 500
+    description: "Point-to-point links between routers and firewalls"
+
+  - name: Guest / Untrusted
+    slug: guest-untrusted
+    weight: 600
+    description: "WiFi guest, IoT, and other untrusted or uncontrolled segments"

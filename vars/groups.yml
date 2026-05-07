@@ -1,4 +1,10 @@
 ---
 # groups — populated by scripts/export_netbox.py
 # Do not hand-edit; re-run the export script to update.
-groups: []
+groups:
+  - name: read-only
+    permissions:
+      - Global Read Only
+  - name: senior-admin
+    permissions:
+      - Senior Administrator

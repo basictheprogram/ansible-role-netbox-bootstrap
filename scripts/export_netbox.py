@@ -27,15 +27,21 @@ import click
 import pynetbox
 import urllib3
 import yaml
+from dotenv import load_dotenv
 from environs import Env
+from rich.console import Console
+from rich.syntax import Syntax
 
 # ---------------------------------------------------------------------------
 # Load .env from the script's own directory (not cwd).
-# This populates os.environ so that Click's envvar= picks up the values.
+# Use load_dotenv directly (the underlying implementation) for reliability.
+# resolve() gives an absolute path regardless of how the script is invoked.
 # ---------------------------------------------------------------------------
-_SCRIPT_DIR = Path(__file__).parent
-_env = Env()
-_env.read_env(_SCRIPT_DIR / ".env", recurse=False)
+_SCRIPT_DIR = Path(__file__).resolve().parent
+load_dotenv(_SCRIPT_DIR / ".env", override=False)
+
+console = Console(highlight=False)
+err_console = Console(stderr=True, highlight=False)
 
 
 # ---------------------------------------------------------------------------
@@ -43,10 +49,40 @@ _env.read_env(_SCRIPT_DIR / ".env", recurse=False)
 # ---------------------------------------------------------------------------
 
 
+def _normalize_type_list(value: list[Any] | None) -> list[str]:
+    """Normalize an object_types / content_types list to flat app.model strings.
+
+    NetBox 4.x returns plain strings (e.g. "dcim.device"). Older versions
+    returned nested dicts with a 'display' key. Handle both.
+    """
+    if not value:
+        return []
+    return [item if isinstance(item, str) else item.get("display", str(item)) for item in value]
+
+
 def _clean_common(record: dict[str, Any]) -> dict[str, Any]:
-    """Remove auto-generated / instance-specific fields from any record."""
-    drop = {"id", "url", "display", "created", "last_updated", "object_id"}
-    return {k: v for k, v in record.items() if k not in drop}
+    """Remove auto-generated / instance-specific fields from any record.
+
+    Drops:
+    * Synthetic identity / URL fields (id, url, display, display_url)
+    * Timestamps (created, last_updated, date_joined, last_login, date_added)
+    * Read-only count statistics (*_count) — computed by NetBox, not settable
+    * Internal / private fields starting with _ (e.g. _depth on hierarchical objects)
+    * object_id (generic FK, instance-specific)
+    """
+    drop = {
+        "id",
+        "url",
+        "display",
+        "display_url",
+        "created",
+        "last_updated",
+        "date_joined",
+        "last_login",
+        "date_added",
+        "object_id",
+    }
+    return {k: v for k, v in record.items() if k not in drop and not k.endswith("_count") and not k.startswith("_")}
 
 
 def _resolve_nested(value: Any) -> Any:  # noqa: ANN401
@@ -99,7 +135,7 @@ def clean_permission(record: dict[str, Any]) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for k, v in r.items():
         if k == "object_types":
-            result[k] = [item.get("display", "") for item in (v or [])]
+            result[k] = _normalize_type_list(v)
         elif k == "groups":
             result[k] = [item.get("name", "") for item in (v or [])]
         elif k == "users":
@@ -117,7 +153,7 @@ def clean_custom_field(record: dict[str, Any]) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for k, v in r.items():
         if k == "object_types":
-            result[k] = [item.get("display", "") for item in (v or [])]
+            result[k] = _normalize_type_list(v)
         elif k in ("choices", "filter_logic", "ui_visibility"):
             result[k] = v
         else:
@@ -131,7 +167,7 @@ def clean_webhook(record: dict[str, Any]) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for k, v in r.items():
         if k == "content_types":
-            result[k] = v if isinstance(v, list) else []
+            result[k] = _normalize_type_list(v)
         else:
             result[k] = _resolve_nested(v)
     return {k: v for k, v in result.items() if v not in (None, "", [], {})}
@@ -142,7 +178,9 @@ def clean_export_template(record: dict[str, Any]) -> dict[str, Any]:
     r = _clean_common(record)
     result: dict[str, Any] = {}
     for k, v in r.items():
-        if k in ("content_types", "template_code"):
+        if k == "content_types":
+            result[k] = _normalize_type_list(v)
+        elif k == "template_code":
             result[k] = v
         else:
             result[k] = _resolve_nested(v)
@@ -155,7 +193,7 @@ def clean_custom_link(record: dict[str, Any]) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for k, v in r.items():
         if k == "content_types":
-            result[k] = v
+            result[k] = _normalize_type_list(v)
         else:
             result[k] = _resolve_nested(v)
     return {k: v for k, v in result.items() if v not in (None, "", [], {})}
@@ -198,6 +236,9 @@ SECTIONS: list[SectionSpec] = [
     # Tier 3 — Tenancy
     ("tenant_groups", "tenancy", "tenant_groups", clean_default, "tenant_groups"),
     ("tenants", "tenancy", "tenants", clean_default, "tenants"),
+    ("contact_groups", "tenancy", "contact_groups", clean_default, "contact_groups"),
+    ("contact_roles", "tenancy", "contact_roles", clean_default, "contact_roles"),
+    ("contacts", "tenancy", "contacts", clean_default, "contacts"),
     # Tier 4 — DCIM structure
     ("regions", "dcim", "regions", clean_default, "regions"),
     ("site_groups", "dcim", "site_groups", clean_default, "site_groups"),
@@ -215,6 +256,50 @@ SECTIONS: list[SectionSpec] = [
 ]
 
 SECTION_KEYS: list[str] = [s[0] for s in SECTIONS]
+
+# Sections that are portable between NetBox instances — safe to export and
+# commit without manual review. These define *how* NetBox is configured
+# (permissions model, custom fields, device roles) rather than *what* is in it
+# (specific sites, tenants, IP ranges).
+#
+# Site-specific sections (users, sites, regions, locations, tenants,
+# aggregates, vrfs, route_targets) require --sections all or an explicit list.
+BOILERPLATE_SECTION_KEYS: list[str] = [
+    "groups",
+    "permissions",
+    "netbox_tags",  # CLI key is 'tags'; yaml_key is 'netbox_tags'
+    "custom_fields",
+    "custom_links",
+    "webhooks",
+    "export_templates",
+    "device_roles",
+    "platforms",
+    "rack_roles",
+    "rirs",
+    "vlan_groups",
+]
+# Resolve to valid SECTION_KEYS (tags CLI key is 'tags', not 'netbox_tags')
+BOILERPLATE_SECTION_KEYS = [
+    k
+    for k in SECTION_KEYS
+    if k
+    in {
+        "groups",
+        "permissions",
+        "tags",
+        "custom_fields",
+        "custom_links",
+        "webhooks",
+        "export_templates",
+        "device_roles",
+        "platforms",
+        "rack_roles",
+        "rirs",
+        "vlan_groups",
+        "contact_groups",
+        "contact_roles",
+    }
+]
 
 
 # ---------------------------------------------------------------------------
@@ -254,13 +339,13 @@ def write_yaml(
         sort_keys=False,
     )
     if dry_run:
-        click.echo(f"  [dry-run] would write {len(records)} records → {path}")
+        console.print(f"  [dim]~[/dim] would write [bold]{len(records)}[/bold] records → [dim]{path}[/dim]")
         if verbose:
-            click.echo(content)
+            console.print(Syntax(content, "yaml", theme="ansi_dark"))
     else:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8")
-        click.echo(f"  ✓ {len(records):>4} records → {path}")
+        console.print(f"  [green]✓[/green] {len(records):>4} records → [dim]{path}[/dim]")
 
 
 # ---------------------------------------------------------------------------
@@ -281,13 +366,13 @@ def _export_sections(
     for key, app_name, endpoint_name, cleaner, yaml_key in SECTIONS:
         if key not in selected:
             continue
-        click.echo(f"\n[{key}]")
+        console.print(f"\n[bold cyan]{key}[/bold cyan]")
         try:
             app = getattr(nb, app_name)
             endpoint = getattr(app, endpoint_name)
             raw_records = list(endpoint.all())
         except Exception as exc:  # noqa: BLE001
-            click.echo(f"  ✗ Failed to fetch: {exc}", err=True)
+            err_console.print(f"  [red]✗[/red] Failed to fetch: {exc}")
             errors.append(key)
             continue
 
@@ -297,7 +382,7 @@ def _export_sections(
                 record_dict = dict(record)
                 cleaned.append(cleaner(record_dict))
             except Exception as exc:  # noqa: BLE001
-                click.echo(f"  ⚠  Skipping record (clean error): {exc}", err=True)
+                err_console.print(f"  [yellow]⚠[/yellow]  Skipping record (clean error): {exc}")
 
         dest = output_path / f"{key}.yml"
         write_yaml(dest, yaml_key, cleaned, dry_run=dry_run, verbose=verbose)
@@ -320,8 +405,8 @@ def _env_file_callback(
     so values in the alternate file win over the script-dir .env.
     """
     if value:
-        override_env = Env()
-        override_env.read_env(value, recurse=False, override=True)
+        env = Env()
+        env.read_env(value, recurse=False, override=True)
     return value
 
 
@@ -357,7 +442,11 @@ def _env_file_callback(
     "--sections",
     default=None,
     envvar="NETBOX_SECTIONS",
-    help=f"Comma-separated sections to export. Valid: {', '.join(SECTION_KEYS)}. Omit for all.",
+    help=(
+        "Comma-separated sections, 'all', or omit for boilerplate-only (default). "
+        f"Boilerplate: {', '.join(BOILERPLATE_SECTION_KEYS)}. "
+        f"All sections: {', '.join(SECTION_KEYS)}."
+    ),
 )
 @click.option(
     "--insecure",
@@ -397,43 +486,59 @@ def export(  # noqa: PLR0913
       3. Explicit CLI flags
 
     \b
-    Example — values from .env, override sections at runtime:
-        python export_netbox.py --sections users,groups,permissions
+    Examples:
+        python export_netbox.py                        # boilerplate sections only (default)
+        python export_netbox.py --sections all         # everything including site-specific
+        python export_netbox.py --sections groups,permissions,device_roles
     """
-    if sections:
+    console.rule("[bold blue]NetBox Export[/bold blue]")
+
+    if dry_run:
+        console.print("[yellow]DRY RUN — no files will be written[/yellow]\n")
+
+    if insecure:
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+        err_console.print("[yellow]⚠[/yellow]  TLS verification disabled\n")
+
+    if not sections:
+        selected = BOILERPLATE_SECTION_KEYS
+        console.print(
+            f"[dim]Exporting boilerplate sections only "
+            f"({len(selected)} sections). "
+            f"Use --sections all for site-specific data.[/dim]\n"
+        )
+    elif sections.strip().lower() == "all":
+        selected = SECTION_KEYS
+    else:
         requested = [s.strip() for s in sections.split(",")]
         invalid = [s for s in requested if s not in SECTION_KEYS]
         if invalid:
             msg = f"Unknown sections: {', '.join(invalid)}. Valid: {', '.join(SECTION_KEYS)}"
             raise click.BadParameter(msg)
         selected = requested
-    else:
-        selected = SECTION_KEYS
 
-    if insecure:
-        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-        click.echo("⚠️  TLS verification disabled.", err=True)
-
-    click.echo(f"Connecting to {url} ...")
+    console.print(f"Connecting to [cyan]{url}[/cyan] ...")
     try:
         nb = pynetbox.api(url, token=token)
         nb.http_session.verify = not insecure
-        nb.status()
+        status = nb.status()
+        version = status.get("netbox-version", "?") if status else "?"
+        console.print(f"[green]✓[/green] Connected  NetBox v[bold]{version}[/bold]\n")
     except Exception as exc:  # noqa: BLE001
-        click.echo(f"✗ Failed to connect to NetBox: {exc}", err=True)
+        err_console.print(f"[red]✗[/red] Failed to connect: {exc}")
         sys.exit(1)
 
     output_path = Path(output_dir)
-    click.echo(f"Exporting {len(selected)} section(s) → {output_path}" + (" [DRY RUN]" if dry_run else ""))
+    console.print(f"Exporting [bold]{len(selected)}[/bold] section(s) → [dim]{output_path}[/dim]")
 
     errors = _export_sections(nb, selected, output_path, dry_run=dry_run, verbose=verbose)
 
-    click.echo()
+    console.print()
     if errors:
-        click.echo(f"⚠️  Completed with errors in: {', '.join(errors)}", err=True)
+        err_console.print(f"[red]✗[/red] Completed with errors in: [bold]{', '.join(errors)}[/bold]")
         sys.exit(1)
     else:
-        click.echo("✓ Export complete.")
+        console.rule("[green]✓ Export complete[/green]", style="green")
 
 
 if __name__ == "__main__":

@@ -49,6 +49,18 @@
   ansible.builtin.include_tasks: tenants.yml
   when: netbox_bootstrap_tenants | bool
 
+- name: Bootstrap contact groups
+  ansible.builtin.include_tasks: contact_groups.yml
+  when: netbox_bootstrap_contact_groups | bool
+
+- name: Bootstrap contact roles
+  ansible.builtin.include_tasks: contact_roles.yml
+  when: netbox_bootstrap_contact_roles | bool
+
+- name: Bootstrap contacts
+  ansible.builtin.include_tasks: contacts.yml
+  when: netbox_bootstrap_contacts | bool
+
 # --- Tier 4: DCIM Structure ---
 - name: Bootstrap regions
   ansible.builtin.include_tasks: regions.yml
@@ -79,6 +91,10 @@
   when: netbox_bootstrap_platforms | bool
 
 # --- Tier 5: IPAM Structure ---
+- name: Bootstrap IPAM roles
+  ansible.builtin.include_tasks: ipam_roles.yml
+  when: netbox_bootstrap_ipam_roles | bool
+
 - name: Bootstrap RIRs
   ansible.builtin.include_tasks: rirs.yml
   when: netbox_bootstrap_rirs | bool

@@ -2,6 +2,7 @@
 - name: Load aggregates var file
   ansible.builtin.include_vars:
     file: "{{ role_path }}/vars/aggregates.yml"
+  when: aggregates is not defined
 
 - name: Ensure aggregates exist
   netbox.netbox.netbox_aggregate:

@@ -2,6 +2,7 @@
 - name: Load webhooks var file
   ansible.builtin.include_vars:
     file: "{{ role_path }}/vars/webhooks.yml"
+  when: webhooks is not defined
 
 - name: Ensure webhooks exist
   netbox.netbox.netbox_webhook:

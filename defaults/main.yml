@@ -19,6 +19,9 @@ netbox_bootstrap_webhooks: true
 netbox_bootstrap_export_templates: true
 netbox_bootstrap_tenant_groups: true
 netbox_bootstrap_tenants: true
+netbox_bootstrap_contact_groups: true
+netbox_bootstrap_contact_roles: true
+netbox_bootstrap_contacts: true
 netbox_bootstrap_regions: true
 netbox_bootstrap_site_groups: true
 netbox_bootstrap_sites: true
@@ -26,6 +29,7 @@ netbox_bootstrap_locations: true
 netbox_bootstrap_rack_roles: true
 netbox_bootstrap_device_roles: true
 netbox_bootstrap_platforms: true
+netbox_bootstrap_ipam_roles: true
 netbox_bootstrap_rirs: true
 netbox_bootstrap_aggregates: true
 netbox_bootstrap_vrfs: true

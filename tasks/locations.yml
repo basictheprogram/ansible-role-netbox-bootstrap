@@ -2,6 +2,7 @@
 - name: Load locations var file
   ansible.builtin.include_vars:
     file: "{{ role_path }}/vars/locations.yml"
+  when: locations is not defined
 
 - name: Ensure locations exist
   netbox.netbox.netbox_location:

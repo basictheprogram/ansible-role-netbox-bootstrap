@@ -1,9 +1,27 @@
 ---
 # Permissions — uri only; no collection module exists for object permissions.
 # Requires groups to already exist (Tier 1 dependency).
+# The API expects group PKs (integers), not group names, so we pre-fetch
+# groups to build a name→pk map before posting each permission.
 - name: Load permissions var file
   ansible.builtin.include_vars:
     file: "{{ role_path }}/vars/permissions.yml"
+  when: permissions is not defined
+
+- name: Fetch groups for name-to-pk resolution
+  ansible.builtin.uri:
+    url: "{{ netbox_url }}/api/users/groups/?limit=500"
+    method: GET
+    headers:
+      Authorization: "Token {{ netbox_api_token }}"
+    validate_certs: "{{ netbox_validate_certs }}"
+  register: _groups_result
+  no_log: true
+
+- name: Build group name-to-pk map
+  ansible.builtin.set_fact:
+    _group_pk_map: >-
+      {{ _groups_result.json.results | items2dict(key_name='name', value_name='id') }}
 
 - name: Fetch existing permissions (for idempotency check)
   ansible.builtin.uri:
@@ -13,6 +31,7 @@
       Authorization: "Token {{ netbox_api_token }}"
     validate_certs: "{{ netbox_validate_certs }}"
   register: _existing_permissions
+  no_log: true
 
 - name: Build list of existing permission names
   ansible.builtin.set_fact:
@@ -27,7 +46,13 @@
       Authorization: "Token {{ netbox_api_token }}"
       Content-Type: "application/json"
     body_format: json
-    body: "{{ item }}"
+    body:
+      name: "{{ item.name }}"
+      enabled: "{{ item.enabled | default(true) }}"
+      object_types: "{{ item.object_types | default([]) }}"
+      actions: "{{ item.actions | default([]) }}"
+      groups: "{{ item.groups | default([]) | map('extract', _group_pk_map) | list }}"
+      constraints: "{{ item.constraints | default(None) }}"
     status_code: [201]
     validate_certs: "{{ netbox_validate_certs }}"
   loop: "{{ permissions | default([]) }}"
@@ -35,3 +60,4 @@
     label: "{{ item.name }}"
   when: item.name not in _existing_permission_names
   changed_when: true
+  no_log: true

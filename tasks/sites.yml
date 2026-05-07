@@ -2,6 +2,7 @@
 - name: Load sites var file
   ansible.builtin.include_vars:
     file: "{{ role_path }}/vars/sites.yml"
+  when: sites is not defined
 
 - name: Ensure sites exist
   netbox.netbox.netbox_site:

@@ -1,4 +1,84 @@
 ---
 # platforms — populated by scripts/export_netbox.py
 # Do not hand-edit; re-run the export script to update.
-platforms: []
+platforms:
+  # Linux
+  - name: Debian GNU/Linux
+    slug: debian
+    description: Debian stable release
+
+  - name: Ubuntu Server
+    slug: ubuntu-server
+    description: Ubuntu LTS server release
+
+  - name: Rocky Linux
+    slug: rocky-linux
+    description: Rocky Linux (RHEL-compatible)
+
+  - name: AlmaLinux
+    slug: almalinux
+    description: AlmaLinux (RHEL-compatible)
+
+  - name: Red Hat Enterprise Linux
+    slug: rhel
+    description: Red Hat Enterprise Linux
+
+  - name: Alpine Linux
+    slug: alpine-linux
+    description: Alpine Linux (commonly used in containers)
+
+  # Windows
+  - name: Windows Server
+    slug: windows-server
+    description: Microsoft Windows Server
+
+  - name: Windows Workstation
+    slug: windows-workstation
+    description: Microsoft Windows desktop OS (workstations and endpoints)
+
+  # Hypervisors
+  - name: Proxmox VE
+    slug: proxmox-ve
+    description: Proxmox Virtual Environment hypervisor
+
+  - name: VMware ESXi
+    slug: vmware-esxi
+    description: VMware vSphere ESXi hypervisor
+
+  - name: XCP-ng
+    slug: xcp-ng
+    description: XCP-ng (Xen-based open-source hypervisor)
+
+  # Network / Firewall
+  - name: FortiOS
+    slug: fortios
+    description: Fortinet FortiOS (FortiGate firewalls)
+
+  - name: Cisco IOS
+    slug: cisco-ios
+    description: Cisco IOS / IOS-XE (routers and switches)
+
+  - name: Cisco NX-OS
+    slug: cisco-nxos
+    description: Cisco NX-OS (Nexus data center switches)
+
+  - name: Juniper Junos
+    slug: junos
+    description: Juniper Networks Junos OS
+
+  - name: pfSense
+    slug: pfsense
+    description: pfSense firewall/router (FreeBSD-based)
+
+  - name: OPNsense
+    slug: opnsense
+    description: OPNsense firewall/router (FreeBSD-based)
+
+  # Storage / Appliances
+  - name: TrueNAS SCALE
+    slug: truenas-scale
+    description: TrueNAS SCALE (Linux-based NAS OS)
+
+  - name: TrueNAS CORE
+    slug: truenas-core
+    description: TrueNAS CORE (FreeBSD-based NAS OS)

@@ -1,4 +1,15 @@
 ---
 # aggregates — populated by scripts/export_netbox.py
 # Do not hand-edit; re-run the export script to update.
-aggregates: []
+# All three RFC 1918 blocks are included as universal defaults.
+# Delete any that are not in use after the role runs.
+aggregates:
+  - prefix: "10.0.0.0/8"
+    rir: rfc-1918-private
+    description: "RFC 1918 — Class A private range"
+  - prefix: "172.16.0.0/12"
+    rir: rfc-1918-private
+    description: "RFC 1918 — Class B private range"
+  - prefix: "192.168.0.0/16"
+    rir: rfc-1918-private
+    description: "RFC 1918 — Class C private range"

@@ -2,6 +2,7 @@
 - name: Load vrfs var file
   ansible.builtin.include_vars:
     file: "{{ role_path }}/vars/vrfs.yml"
+  when: vrfs is not defined
 
 - name: Ensure vrfs exist
   netbox.netbox.netbox_vrf:

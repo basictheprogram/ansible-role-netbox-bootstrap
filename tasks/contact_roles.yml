@@ -1,16 +1,16 @@
 ---
-- name: Load tenant_groups var file
+- name: Load contact_roles var file
   ansible.builtin.include_vars:
-    file: "{{ role_path }}/vars/tenant_groups.yml"
-  when: tenant_groups is not defined
+    file: "{{ role_path }}/vars/contact_roles.yml"
+  when: contact_roles is not defined
 
-- name: Ensure tenant_groups exist
-  netbox.netbox.netbox_tenant_group:
+- name: Ensure contact roles exist
+  netbox.netbox.netbox_contact_role:
     netbox_url: "{{ netbox_url }}"
     netbox_token: "{{ netbox_api_token }}"
     validate_certs: "{{ netbox_validate_certs }}"
     data: "{{ item }}"
     state: present
-  loop: "{{ tenant_groups | default([]) }}"
+  loop: "{{ contact_roles | default([]) }}"
   loop_control:
     label: "{{ item.name }}"

@@ -2,6 +2,7 @@
 - name: Load device_roles var file
   ansible.builtin.include_vars:
     file: "{{ role_path }}/vars/device_roles.yml"
+  when: device_roles is not defined
 
 - name: Ensure device_roles exist
   netbox.netbox.netbox_device_role:

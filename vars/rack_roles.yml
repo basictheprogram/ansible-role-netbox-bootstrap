@@ -1,4 +1,33 @@
 ---
 # rack_roles — populated by scripts/export_netbox.py
 # Do not hand-edit; re-run the export script to update.
-rack_roles: []
+rack_roles:
+  - name: Compute
+    slug: compute
+    color: "1565c0"
+    description: General-purpose compute servers
+
+  - name: Network
+    slug: network
+    color: "2e7d32"
+    description: Network infrastructure (switches, routers, firewalls)
+
+  - name: Storage
+    slug: storage
+    color: "e65100"
+    description: Storage arrays and NAS appliances
+
+  - name: Management
+    slug: management
+    color: "6a1b9a"
+    description: Out-of-band management and console servers
+
+  - name: PDU / Power
+    slug: pdu-power
+    color: "f9a825"
+    description: Power distribution units and UPS devices
+
+  - name: Mixed
+    slug: mixed
+    color: "546e7a"
+    description: Mixed-use rack with no single dominant role

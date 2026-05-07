@@ -2,6 +2,7 @@
 - name: Load route_targets var file
   ansible.builtin.include_vars:
     file: "{{ role_path }}/vars/route_targets.yml"
+  when: route_targets is not defined
 
 - name: Ensure route_targets exist
   netbox.netbox.netbox_route_target:

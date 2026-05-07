@@ -2,6 +2,7 @@
 - name: Load rack_roles var file
   ansible.builtin.include_vars:
     file: "{{ role_path }}/vars/rack_roles.yml"
+  when: rack_roles is not defined
 
 - name: Ensure rack_roles exist
   netbox.netbox.netbox_rack_role:

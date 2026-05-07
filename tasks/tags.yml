@@ -2,6 +2,7 @@
 - name: Load tags var file
   ansible.builtin.include_vars:
     file: "{{ role_path }}/vars/tags.yml"
+  when: netbox_tags is not defined
 
 - name: Ensure tags exist
   netbox.netbox.netbox_tag:

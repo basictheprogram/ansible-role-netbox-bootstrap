@@ -2,6 +2,7 @@
 - name: Load export_templates var file
   ansible.builtin.include_vars:
     file: "{{ role_path }}/vars/export_templates.yml"
+  when: export_templates is not defined
 
 - name: Fetch existing export templates
   ansible.builtin.uri:

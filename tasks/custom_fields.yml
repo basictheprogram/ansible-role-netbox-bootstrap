@@ -2,6 +2,7 @@
 - name: Load custom_fields var file
   ansible.builtin.include_vars:
     file: "{{ role_path }}/vars/custom_fields.yml"
+  when: custom_fields is not defined
 
 - name: Ensure custom fields exist
   netbox.netbox.netbox_custom_field:

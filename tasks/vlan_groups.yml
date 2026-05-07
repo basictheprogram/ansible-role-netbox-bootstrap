@@ -2,6 +2,7 @@
 - name: Load vlan_groups var file
   ansible.builtin.include_vars:
     file: "{{ role_path }}/vars/vlan_groups.yml"
+  when: vlan_groups is not defined
 
 - name: Ensure vlan_groups exist
   netbox.netbox.netbox_vlan_group:

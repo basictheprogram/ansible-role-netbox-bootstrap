@@ -4,6 +4,7 @@
 - name: Load users var file
   ansible.builtin.include_vars:
     file: "{{ role_path }}/vars/users.yml"
+  when: users is not defined
 
 - name: Ensure local users exist
   netbox.netbox.netbox_user:
