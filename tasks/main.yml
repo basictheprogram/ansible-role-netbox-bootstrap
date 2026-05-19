@@ -90,6 +90,24 @@
   ansible.builtin.include_tasks: platforms.yml
   when: netbox_bootstrap_platforms | bool
 
+# --- Tier 6: Virtualization ---
+- name: Bootstrap virtual machine types
+  ansible.builtin.include_tasks: virtual_machine_types.yml
+  when: netbox_bootstrap_virtual_machine_types | bool
+
+- name: Bootstrap cluster types
+  ansible.builtin.include_tasks: cluster_types.yml
+  when: netbox_bootstrap_cluster_types | bool
+
+- name: Bootstrap clusters
+  ansible.builtin.include_tasks: clusters.yml
+  when: netbox_bootstrap_clusters | bool
+
+# --- Tier 7: Cloud Inventory ---
+- name: Bootstrap RDS instances
+  ansible.builtin.include_tasks: rds_instances.yml
+  when: netbox_bootstrap_rds_instances | bool
+
 # --- Tier 5: IPAM Structure ---
 - name: Bootstrap IPAM roles
   ansible.builtin.include_tasks: ipam_roles.yml

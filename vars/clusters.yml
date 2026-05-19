@@ -1,0 +1,17 @@
+---
+clusters:
+  - name: AWS EFS
+    cluster_type: Cloud
+    description: Amazon Elastic File System filesystems
+  - name: AWS ELB
+    cluster_type: Cloud
+    description: Amazon Elastic Load Balancers
+  - name: AWS RDS
+    cluster_type: Cloud
+    description: Amazon RDS managed database instances
+  - name: AWS Route53
+    cluster_type: Cloud
+    description: Amazon Route53 hosted zones
+  - name: AWS SES
+    cluster_type: Cloud
+    description: Amazon Simple Email Service identities

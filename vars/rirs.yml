@@ -1,9 +1,12 @@
 ---
 # rirs — populated by scripts/export_netbox.py
 # Do not hand-edit; re-run the export script to update.
-# RFC 1918 is included as a universal default — safe to leave even if unused.
 rirs:
-  - name: RFC 1918 (Private)
-    slug: rfc-1918-private
+  - name: RFC 1918
+    slug: rfc-1918
     is_private: true
-    description: "Private address space per RFC 1918"
+    description: "Private address space (RFC 1918)"
+  - name: ARIN
+    slug: arin
+    is_private: false
+    description: "American Registry for Internet Numbers"

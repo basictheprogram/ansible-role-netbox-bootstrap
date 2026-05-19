@@ -1,16 +1,16 @@
 ---
-- name: Load ipam_roles var file
+- name: Load cluster_types var file
   ansible.builtin.include_vars:
-    file: "{{ role_path }}/vars/ipam_roles.yml"
-  when: ipam_roles is not defined
+    file: "{{ role_path }}/vars/cluster_types.yml"
+  when: cluster_types is not defined
 
-- name: Ensure IPAM roles exist
-  netbox.netbox.netbox_ipam_role:
+- name: Ensure cluster types exist
+  netbox.netbox.netbox_cluster_type:
     netbox_url: "{{ netbox_url }}"
     netbox_token: "{{ netbox_api_token }}"
     validate_certs: "{{ netbox_validate_certs }}"
     data: "{{ item }}"
     state: present
-  loop: "{{ ipam_roles | default([]) }}"
+  loop: "{{ cluster_types | default([]) }}"
   loop_control:
     label: "{{ item.name }}"

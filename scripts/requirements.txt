@@ -1,4 +1,5 @@
 PyYAML>=6.0
+boto3>=1.34
 click>=8.0
 environs>=9.5
 pynetbox>=7.0

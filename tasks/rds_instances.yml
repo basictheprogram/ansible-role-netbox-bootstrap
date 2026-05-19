@@ -1,0 +1,36 @@
+---
+# rds_instances — Tier 7: Cloud Inventory
+# Pushes AWS RDS DB instances as NetBox virtual machines.
+# Populated by scripts/export_aws_rds.py; never hand-edit vars/rds_instances.yml.
+#
+# Dependencies: cluster_types and clusters must run before this section.
+#   The "AWS RDS" cluster (type: Cloud) is defined in vars/clusters.yml.
+#
+# Override netbox_rds_cluster in your playbook vars if your cluster is named
+# differently (e.g. per-region: "AWS RDS us-east-1").
+#
+# Status mapping (RDS → NetBox):
+#   available  → active
+#   everything else → offline
+
+- name: Load rds_instances var file
+  ansible.builtin.include_vars:
+    file: "{{ role_path }}/vars/rds_instances.yml"
+  when: rds_instances is not defined
+
+- name: Ensure RDS instances exist as virtual machines
+  netbox.netbox.netbox_virtual_machine:
+    netbox_url: "{{ netbox_url }}"
+    netbox_token: "{{ netbox_api_token }}"
+    validate_certs: "{{ netbox_validate_certs }}"
+    data:
+      name: "{{ item.name }}"
+      cluster: "{{ netbox_rds_cluster }}"
+      status: "{{ 'active' if item.status == 'available' else 'offline' }}"
+      disk: "{{ item.allocated_storage | default(omit) }}"
+      description: "{{ item.description | default('') }}"
+      comments: "{{ item.comments | default('') }}"
+    state: present
+  loop: "{{ rds_instances | default([]) }}"
+  loop_control:
+    label: "{{ item.name }}"

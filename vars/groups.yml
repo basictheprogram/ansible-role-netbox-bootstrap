@@ -1,7 +1,7 @@
 ---
 # groups — populated by scripts/export_netbox.py
 # Do not hand-edit; re-run the export script to update.
-groups:
+netbox_groups:
   - name: read-only
     permissions:
       - Global Read Only

@@ -3,7 +3,7 @@
 - name: Load groups var file
   ansible.builtin.include_vars:
     file: "{{ role_path }}/vars/groups.yml"
-  when: groups is mapping
+  when: netbox_groups is not defined
 
 - name: Ensure groups exist
   ansible.builtin.uri:
@@ -17,7 +17,7 @@
       name: "{{ item.name }}"
     status_code: [200, 201, 400]
     validate_certs: "{{ netbox_validate_certs }}"
-  loop: "{{ groups | default([]) }}"
+  loop: "{{ netbox_groups | default([]) }}"
   register: _group_results
   changed_when: _group_results.status == 201
   # 400 is returned when the group already exists (duplicate name); treat as ok.

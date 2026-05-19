@@ -67,11 +67,50 @@
       Check that netbox_url is correct, the instance is running, and the token is valid.
     quiet: true
 
+- name: "Preflight | Fetch NetBox status"
+  ansible.builtin.uri:
+    url: "{{ netbox_url }}/api/status/"
+    method: GET
+    headers:
+      Authorization: "Token {{ netbox_api_token }}"
+    validate_certs: "{{ netbox_validate_certs }}"
+    status_code: 200
+    timeout: 10
+  register: _preflight_status
+  no_log: true
+
+- name: "Preflight | Assert minimum NetBox version"
+  ansible.builtin.assert:
+    that:
+      - _preflight_status.json['netbox-version'] is version(netbox_minimum_version, '>=')
+    fail_msg: >-
+      NetBox {{ _preflight_status.json['netbox-version'] }} is below the minimum
+      required version {{ netbox_minimum_version }}.
+      Upgrade NetBox before running this role.
+    quiet: true
+
+- name: "Preflight | Assert NetBox >= 4.6.0 for virtual_machine_types"
+  ansible.builtin.assert:
+    that:
+      - _preflight_status.json['netbox-version'] is version('4.6.0', '>=')
+    fail_msg: >-
+      netbox_bootstrap_virtual_machine_types requires NetBox >= 4.6.0.
+      Found {{ _preflight_status.json['netbox-version'] }}.
+      Set netbox_bootstrap_virtual_machine_types: false or upgrade NetBox.
+    quiet: true
+  when: netbox_bootstrap_virtual_machine_types | bool
+
+- name: "Preflight | Stat netbox.netbox collection in each configured path"
+  ansible.builtin.stat:
+    path: "{{ item }}/ansible_collections/netbox/netbox/MANIFEST.json"
+  loop: "{{ lookup('config', 'COLLECTIONS_PATHS') }}"
+  register: _preflight_collection_stat
+
 - name: "Preflight | Assert netbox.netbox collection is installed"
   ansible.builtin.assert:
     that:
-      - lookup('community.general.collection_version', 'netbox.netbox') is not none
+      - _preflight_collection_stat.results | selectattr('stat.exists', 'equalto', true) | list | length > 0
     fail_msg: >-
       The netbox.netbox collection is required but not installed.
-      Run: ansible-galaxy collection install netbox.netbox
+      Run: ansible-galaxy collection install -r requirements.yml -p ./collections
     quiet: true

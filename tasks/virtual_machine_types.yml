@@ -1,0 +1,34 @@
+---
+# virtual_machine_types — uses uri (no netbox.netbox module exists yet;
+# VirtualMachineType was added in NetBox 4.6.0, collection support pending)
+- name: Load virtual_machine_types var file
+  ansible.builtin.include_vars:
+    file: "{{ role_path }}/vars/virtual_machine_types.yml"
+  when: virtual_machine_types is not defined
+
+- name: Ensure virtual_machine_types exist
+  ansible.builtin.uri:
+    url: "{{ netbox_url }}/api/virtualization/virtual-machine-types/"
+    method: POST
+    headers:
+      Authorization: "Token {{ netbox_api_token }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      name: "{{ item.name }}"
+      slug: "{{ item.slug }}"
+      description: "{{ item.description | default('') }}"
+      vcpus: "{{ item.vcpus | default(omit) }}"
+      memory: "{{ item.memory | default(omit) }}"
+      comments: "{{ item.comments | default('') }}"
+    status_code: [200, 201, 400]
+    validate_certs: "{{ netbox_validate_certs }}"
+  loop: "{{ virtual_machine_types | default([]) }}"
+  register: _vm_type_results
+  changed_when: _vm_type_results.status == 201
+  failed_when: >
+    _vm_type_results.status not in [200, 201, 400] or
+    (_vm_type_results.status == 400 and
+     'already exists' not in (_vm_type_results.json | to_json))
+  loop_control:
+    label: "{{ item.name }}"

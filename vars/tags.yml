@@ -1,4 +1,36 @@
 ---
 # tags — populated by scripts/export_netbox.py
 # Do not hand-edit; re-run the export script to update.
-netbox_tags: []
+netbox_tags:
+  - name: airprint
+    slug: airprint
+    color: "9e9e9e"
+    description: ""
+  - name: driverless
+    slug: driverless
+    color: "9e9e9e"
+    description: ""
+  - name: ipp-everywhere
+    slug: ipp-everywhere
+    color: "9e9e9e"
+    description: ""
+  - name: legacy-print
+    slug: legacy-print
+    color: "9e9e9e"
+    description: ""
+  - name: mopria
+    slug: mopria
+    color: "9e9e9e"
+    description: ""
+  - name: requires-ppd
+    slug: requires-ppd
+    color: "9e9e9e"
+    description: ""
+  - name: retire-soon
+    slug: retire-soon
+    color: "9e9e9e"
+    description: ""
+  - name: socket9100
+    slug: socket9100
+    color: "9e9e9e"
+    description: ""

@@ -6,6 +6,7 @@
 netbox_url: "https://netbox.example.com"
 netbox_api_token: "{{ vault_netbox_api_token }}"
 netbox_validate_certs: true
+netbox_minimum_version: "4.0.0"
 
 # --- Section toggles ---
 # Set any to false to skip that section entirely on a run.
@@ -29,6 +30,11 @@ netbox_bootstrap_locations: true
 netbox_bootstrap_rack_roles: true
 netbox_bootstrap_device_roles: true
 netbox_bootstrap_platforms: true
+netbox_bootstrap_virtual_machine_types: true
+netbox_bootstrap_cluster_types: true
+netbox_bootstrap_clusters: true
+netbox_bootstrap_rds_instances: true
+netbox_rds_cluster: "AWS RDS"
 netbox_bootstrap_ipam_roles: true
 netbox_bootstrap_rirs: true
 netbox_bootstrap_aggregates: true

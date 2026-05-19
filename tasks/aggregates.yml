@@ -1,16 +1,47 @@
 ---
+# aggregates — uses uri (netbox.netbox.netbox_aggregate does not reliably handle
+# aggregates created outside this role; overlap 400 is treated as already-exists)
 - name: Load aggregates var file
   ansible.builtin.include_vars:
     file: "{{ role_path }}/vars/aggregates.yml"
   when: aggregates is not defined
 
-- name: Ensure aggregates exist
-  netbox.netbox.netbox_aggregate:
-    netbox_url: "{{ netbox_url }}"
-    netbox_token: "{{ netbox_api_token }}"
+- name: Fetch RIR list for ID resolution
+  ansible.builtin.uri:
+    url: "{{ netbox_url }}/api/ipam/rirs/?limit=100"
+    method: GET
+    headers:
+      Authorization: "Token {{ netbox_api_token }}"
     validate_certs: "{{ netbox_validate_certs }}"
-    data: "{{ item }}"
-    state: present
+    status_code: 200
+  register: _rirs_response
+  no_log: true
+
+- name: Build RIR name-to-id map
+  ansible.builtin.set_fact:
+    _rir_id_map: "{{ _rirs_response.json.results | items2dict(key_name='name', value_name='id') }}"
+
+- name: Ensure aggregates exist
+  ansible.builtin.uri:
+    url: "{{ netbox_url }}/api/ipam/aggregates/"
+    method: POST
+    headers:
+      Authorization: "Token {{ netbox_api_token }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      prefix: "{{ item.prefix }}"
+      rir: "{{ _rir_id_map[item.rir] }}"
+      description: "{{ item.description | default('') }}"
+    status_code: [200, 201, 400]
+    validate_certs: "{{ netbox_validate_certs }}"
   loop: "{{ aggregates | default([]) }}"
+  register: _aggregate_results
+  changed_when: _aggregate_results.status == 201
+  failed_when: >
+    _aggregate_results.status not in [200, 201, 400] or
+    (_aggregate_results.status == 400 and
+     'overlap' not in (_aggregate_results.json | to_json) and
+     'already' not in (_aggregate_results.json | to_json))
   loop_control:
     label: "{{ item.prefix }}"

@@ -1,0 +1,396 @@
+---
+virtual_machine_types:
+  - name: t2.2xlarge
+    slug: t2-2xlarge
+    description: 8.0 vCPUs, 32768 MB, x86_64, current generation
+    vcpus: 8.0
+    memory: 32768
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t2.large
+    slug: t2-large
+    description: 2.0 vCPUs, 8192 MB, x86_64, current generation
+    vcpus: 2.0
+    memory: 8192
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t2.medium
+    slug: t2-medium
+    description: 2.0 vCPUs, 4096 MB, i386, current generation
+    vcpus: 2.0
+    memory: 4096
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t2.micro
+    slug: t2-micro
+    description: 1.0 vCPUs, 1024 MB, i386, current generation
+    vcpus: 1.0
+    memory: 1024
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t2.nano
+    slug: t2-nano
+    description: 1.0 vCPUs, 512 MB, i386, current generation
+    vcpus: 1.0
+    memory: 512
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t2.small
+    slug: t2-small
+    description: 1.0 vCPUs, 2048 MB, i386, current generation
+    vcpus: 1.0
+    memory: 2048
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t2.xlarge
+    slug: t2-xlarge
+    description: 4.0 vCPUs, 16384 MB, x86_64, current generation
+    vcpus: 4.0
+    memory: 16384
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t3.2xlarge
+    slug: t3-2xlarge
+    description: 8.0 vCPUs, 32768 MB, x86_64, current generation
+    vcpus: 8.0
+    memory: 32768
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t3.large
+    slug: t3-large
+    description: 2.0 vCPUs, 8192 MB, x86_64, current generation
+    vcpus: 2.0
+    memory: 8192
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t3.medium
+    slug: t3-medium
+    description: 2.0 vCPUs, 4096 MB, x86_64, current generation
+    vcpus: 2.0
+    memory: 4096
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t3.micro
+    slug: t3-micro
+    description: 2.0 vCPUs, 1024 MB, x86_64, current generation
+    vcpus: 2.0
+    memory: 1024
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t3.nano
+    slug: t3-nano
+    description: 2.0 vCPUs, 512 MB, x86_64, current generation
+    vcpus: 2.0
+    memory: 512
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t3.small
+    slug: t3-small
+    description: 2.0 vCPUs, 2048 MB, x86_64, current generation
+    vcpus: 2.0
+    memory: 2048
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t3.xlarge
+    slug: t3-xlarge
+    description: 4.0 vCPUs, 16384 MB, x86_64, current generation
+    vcpus: 4.0
+    memory: 16384
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t3a.2xlarge
+    slug: t3a-2xlarge
+    description: 8.0 vCPUs, 32768 MB, x86_64, current generation
+    vcpus: 8.0
+    memory: 32768
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t3a.large
+    slug: t3a-large
+    description: 2.0 vCPUs, 8192 MB, x86_64, current generation
+    vcpus: 2.0
+    memory: 8192
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t3a.medium
+    slug: t3a-medium
+    description: 2.0 vCPUs, 4096 MB, x86_64, current generation
+    vcpus: 2.0
+    memory: 4096
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t3a.micro
+    slug: t3a-micro
+    description: 2.0 vCPUs, 1024 MB, x86_64, current generation
+    vcpus: 2.0
+    memory: 1024
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t3a.nano
+    slug: t3a-nano
+    description: 2.0 vCPUs, 512 MB, x86_64, current generation
+    vcpus: 2.0
+    memory: 512
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t3a.small
+    slug: t3a-small
+    description: 2.0 vCPUs, 2048 MB, x86_64, current generation
+    vcpus: 2.0
+    memory: 2048
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t3a.xlarge
+    slug: t3a-xlarge
+    description: 4.0 vCPUs, 16384 MB, x86_64, current generation
+    vcpus: 4.0
+    memory: 16384
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t4g.2xlarge
+    slug: t4g-2xlarge
+    description: 8.0 vCPUs, 32768 MB, arm64, current generation
+    vcpus: 8.0
+    memory: 32768
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t4g.large
+    slug: t4g-large
+    description: 2.0 vCPUs, 8192 MB, arm64, current generation
+    vcpus: 2.0
+    memory: 8192
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t4g.medium
+    slug: t4g-medium
+    description: 2.0 vCPUs, 4096 MB, arm64, current generation
+    vcpus: 2.0
+    memory: 4096
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t4g.micro
+    slug: t4g-micro
+    description: 2.0 vCPUs, 1024 MB, arm64, current generation
+    vcpus: 2.0
+    memory: 1024
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t4g.nano
+    slug: t4g-nano
+    description: 2.0 vCPUs, 512 MB, arm64, current generation
+    vcpus: 2.0
+    memory: 512
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t4g.small
+    slug: t4g-small
+    description: 2.0 vCPUs, 2048 MB, arm64, current generation
+    vcpus: 2.0
+    memory: 2048
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: t4g.xlarge
+    slug: t4g-xlarge
+    description: 4.0 vCPUs, 16384 MB, arm64, current generation
+    vcpus: 4.0
+    memory: 16384
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: trn1.2xlarge
+    slug: trn1-2xlarge
+    description: 8.0 vCPUs, 32768 MB, x86_64, current generation
+    vcpus: 8.0
+    memory: 32768
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: trn1.32xlarge
+    slug: trn1-32xlarge
+    description: 128.0 vCPUs, 524288 MB, x86_64, current generation
+    vcpus: 128.0
+    memory: 524288
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: trn1n.32xlarge
+    slug: trn1n-32xlarge
+    description: 128.0 vCPUs, 524288 MB, x86_64, current generation
+    vcpus: 128.0
+    memory: 524288
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  # --- AWS Elastic Load Balancing ---
+  - name: Application Load Balancer
+    slug: application-load-balancer
+    description: AWS ALB — Layer 7 HTTP/HTTPS load balancer
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: Classic Load Balancer
+    slug: classic-load-balancer
+    description: AWS CLB — legacy Layer 4/7 load balancer
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: Gateway Load Balancer
+    slug: gateway-load-balancer
+    description: AWS GWLB — Layer 3 transparent network appliance load balancer
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: Network Load Balancer
+    slug: network-load-balancer
+    description: AWS NLB — Layer 4 TCP/UDP load balancer
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  # --- AWS Elastic File System ---
+  - name: EFS One Zone
+    slug: efs-one-zone
+    description: AWS EFS One Zone — single-AZ storage class
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: EFS Standard
+    slug: efs-standard
+    description: AWS EFS Standard — multi-AZ storage class
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  # --- AWS Route 53 ---
+  - name: Route53 Private Hosted Zone
+    slug: route53-private-hosted-zone
+    description: AWS Route53 private hosted zone (VPC-bound DNS)
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: Route53 Public Hosted Zone
+    slug: route53-public-hosted-zone
+    description: AWS Route53 public hosted zone (internet-facing DNS)
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  # --- AWS Simple Email Service ---
+  - name: SES Domain Identity
+    slug: ses-domain-identity
+    description: AWS SES verified domain identity
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
+  - name: SES Email Identity
+    slug: ses-email-identity
+    description: AWS SES verified email address identity
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""

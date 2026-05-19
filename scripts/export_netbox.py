@@ -26,19 +26,14 @@ from typing import Any
 import click
 import pynetbox
 import urllib3
-import yaml
-from dotenv import load_dotenv
-from environs import Env
+from export_utils import env_file_callback, load_script_env, write_yaml
 from rich.console import Console
-from rich.syntax import Syntax
 
 # ---------------------------------------------------------------------------
 # Load .env from the script's own directory (not cwd).
-# Use load_dotenv directly (the underlying implementation) for reliability.
 # resolve() gives an absolute path regardless of how the script is invoked.
 # ---------------------------------------------------------------------------
-_SCRIPT_DIR = Path(__file__).resolve().parent
-load_dotenv(_SCRIPT_DIR / ".env", override=False)
+load_script_env(__file__)
 
 console = Console(highlight=False)
 err_console = Console(stderr=True, highlight=False)
@@ -218,7 +213,7 @@ SectionSpec = tuple[str, str, str, CleanerFn, str]
 
 SECTIONS: list[SectionSpec] = [
     # Tier 1 — Users & Access
-    ("groups", "users", "groups", clean_default, "groups"),
+    ("groups", "users", "groups", clean_default, "netbox_groups"),
     ("users", "users", "users", clean_user, "users"),
     ("permissions", "users", "permissions", clean_permission, "permissions"),
     # Tier 2 — Extras
@@ -303,52 +298,6 @@ BOILERPLATE_SECTION_KEYS = [
 
 
 # ---------------------------------------------------------------------------
-# YAML helpers
-# ---------------------------------------------------------------------------
-
-
-def _yaml_str_representer(dumper: yaml.Dumper, data: str) -> yaml.Node:
-    """Use literal block style for multi-line strings."""
-    if "\n" in data:
-        return dumper.represent_scalar("tag:yaml.org,2002:str", data, style="|")
-    return dumper.represent_scalar("tag:yaml.org,2002:str", data)
-
-
-def _build_dumper() -> type[yaml.Dumper]:
-    """Build a YAML Dumper with a literal-block string representer."""
-    dumper = yaml.Dumper
-    dumper.add_representer(str, _yaml_str_representer)
-    return dumper
-
-
-def write_yaml(
-    path: Path,
-    key: str,
-    records: list[dict[str, Any]],
-    *,
-    dry_run: bool,
-    verbose: bool,
-) -> None:
-    """Serialize records to a YAML file under the given top-level key."""
-    data = {key: records}
-    content = yaml.dump(
-        data,
-        Dumper=_build_dumper(),
-        default_flow_style=False,
-        allow_unicode=True,
-        sort_keys=False,
-    )
-    if dry_run:
-        console.print(f"  [dim]~[/dim] would write [bold]{len(records)}[/bold] records → [dim]{path}[/dim]")
-        if verbose:
-            console.print(Syntax(content, "yaml", theme="ansi_dark"))
-    else:
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(content, encoding="utf-8")
-        console.print(f"  [green]✓[/green] {len(records):>4} records → [dim]{path}[/dim]")
-
-
-# ---------------------------------------------------------------------------
 # Export loop (extracted to keep the Click command under complexity threshold)
 # ---------------------------------------------------------------------------
 
@@ -394,22 +343,6 @@ def _export_sections(
 # ---------------------------------------------------------------------------
 
 
-def _env_file_callback(
-    _ctx: click.Context,
-    _param: click.Parameter,
-    value: str | None,
-) -> str | None:
-    """Eager callback: load an alternate .env and override os.environ.
-
-    Fires before Click resolves envvar= defaults on the remaining options,
-    so values in the alternate file win over the script-dir .env.
-    """
-    if value:
-        env = Env()
-        env.read_env(value, recurse=False, override=True)
-    return value
-
-
 @click.command()
 @click.option(
     "--env-file",
@@ -417,7 +350,7 @@ def _env_file_callback(
     default=None,
     is_eager=True,
     expose_value=False,
-    callback=_env_file_callback,
+    callback=env_file_callback,
     help="Path to an alternate .env file. Overrides script-directory .env values.",
 )
 @click.option("-u", "--url", required=True, envvar="NETBOX_URL", help="NetBox base URL.")
@@ -480,6 +413,7 @@ def export(  # noqa: PLR0913
 ) -> None:
     r"""Export NetBox configuration to YAML variable files.
 
+    \b
     Configuration precedence (last wins):
       1. .env in the scripts/ directory
       2. --env-file <path>
