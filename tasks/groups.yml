@@ -19,6 +19,7 @@
     validate_certs: "{{ netbox_validate_certs }}"
   loop: "{{ netbox_groups | default([]) }}"
   register: _group_results
+  no_log: true
   changed_when: _group_results.status == 201
   # 400 is returned when the group already exists (duplicate name); treat as ok.
   failed_when: >

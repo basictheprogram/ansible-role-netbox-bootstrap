@@ -1,2 +1,123 @@
 ---
-custom_fields: []
+custom_fields:
+
+  - name: assigned_user
+    label: Assigned User
+    type: text
+    object_types:
+      - dcim.device
+      - virtualization.virtualmachine
+    required: false
+    description: Primary user assigned to this device or VM
+
+  - name: windows_build
+    label: Windows Build
+    type: text
+    object_types:
+      - dcim.device
+      - virtualization.virtualmachine
+    required: false
+    description: Windows build number (e.g. 22H2, 23H2)
+
+  - name: warranty_expiration
+    label: Warranty Expiration
+    type: date
+    object_types:
+      - dcim.device
+    required: false
+    description: Hardware warranty expiration date
+
+  - name: deployment_date
+    label: Deployment Date
+    type: date
+    object_types:
+      - dcim.device
+      - virtualization.virtualmachine
+    required: false
+    description: Date the device or VM was placed into production
+
+  - name: ram_gb
+    label: RAM (GB)
+    type: integer
+    object_types:
+      - dcim.device
+      - virtualization.virtualmachine
+    required: false
+    description: Installed RAM in gigabytes
+
+  - name: cpu_model
+    label: CPU Model
+    type: text
+    object_types:
+      - dcim.device
+      - virtualization.virtualmachine
+    required: false
+    description: CPU model string (e.g. Intel Core i7-1365U)
+
+  - name: disk_size_gb
+    label: Disk Size (GB)
+    type: integer
+    object_types:
+      - dcim.device
+      - virtualization.virtualmachine
+    required: false
+    description: Total primary disk size in gigabytes
+
+  # TrueNAS CE — per-disk inventory item fields
+  # Apply these to dcim.inventoryitem objects representing individual physical disks.
+
+  - name: disk_serial_number
+    label: Disk Serial Number
+    type: text
+    object_types:
+      - dcim.inventoryitem
+    required: false
+    description: Manufacturer serial number of the physical disk
+
+  - name: disk_capacity_gb
+    label: Disk Capacity (GB)
+    type: integer
+    object_types:
+      - dcim.inventoryitem
+    required: false
+    description: Raw capacity of the physical disk in gigabytes
+
+  - name: disk_type
+    label: Disk Type
+    type: text
+    object_types:
+      - dcim.inventoryitem
+    required: false
+    description: Physical disk media type (HDD, SSD, or NVMe)
+
+  - name: disk_rpm
+    label: Disk RPM
+    type: integer
+    object_types:
+      - dcim.inventoryitem
+    required: false
+    description: Spindle speed in RPM; leave blank for SSD/NVMe
+
+  - name: disk_smart_status
+    label: SMART Status
+    type: text
+    object_types:
+      - dcim.inventoryitem
+    required: false
+    description: Last known SMART health result (Pass, Warn, Fail, or Unknown)
+
+  - name: disk_zfs_pool
+    label: ZFS Pool
+    type: text
+    object_types:
+      - dcim.inventoryitem
+    required: false
+    description: Name of the ZFS pool this disk is assigned to (e.g. tank, data)
+
+  - name: disk_bay_slot
+    label: Disk Bay / Slot
+    type: text
+    object_types:
+      - dcim.inventoryitem
+    required: false
+    description: Physical bay or slot label as reported by TrueNAS (e.g. da0, sda, slot3)

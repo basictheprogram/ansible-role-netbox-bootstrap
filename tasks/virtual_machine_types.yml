@@ -25,6 +25,7 @@
     validate_certs: "{{ netbox_validate_certs }}"
   loop: "{{ virtual_machine_types | default([]) }}"
   register: _vm_type_results
+  no_log: true
   changed_when: _vm_type_results.status == 201
   failed_when: >
     _vm_type_results.status not in [200, 201, 400] or

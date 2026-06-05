@@ -24,3 +24,4 @@
   loop: "{{ users | default([]) }}"
   loop_control:
     label: "{{ item.username }}"
+  no_log: true

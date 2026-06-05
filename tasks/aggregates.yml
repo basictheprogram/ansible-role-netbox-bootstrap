@@ -37,6 +37,7 @@
     validate_certs: "{{ netbox_validate_certs }}"
   loop: "{{ aggregates | default([]) }}"
   register: _aggregate_results
+  no_log: true
   changed_when: _aggregate_results.status == 201
   failed_when: >
     _aggregate_results.status not in [200, 201, 400] or

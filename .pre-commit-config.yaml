@@ -29,7 +29,7 @@ repos:
       - id: gitleaks
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.12
+    rev: v0.15.16
     hooks:
       - id: ruff
         name: Ruff check
@@ -40,6 +40,16 @@ repos:
         name: Ruff format
         description: "Run 'ruff format' for extremely fast Python formatting"
 
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.14.0
+    hooks:
+      - id: hadolint
+        name: Lint Dockerfiles
+        description: Runs hadolint to lint Dockerfiles
+        language: system
+        types: ["dockerfile"]
+        entry: hadolint
+
   - repo: local
     hooks:
       - id: ansible-lint
@@ -49,6 +59,24 @@ repos:
         files: \.(yaml|yml)$
         pass_filenames: false
 
+  - repo: https://github.com/jumanjihouse/pre-commit-hooks
+    rev: 3.0.0
+    hooks:
+      # - id: bundler-audit
+      # - id: check-mailmap
+      # - id: fasterer
+      # - id: forbid-binary
+      # - id: forbid-space-in-indent
+      # - id: git-check  # Configure in .gitattributes
+      # - id: git-dirty  # Configure in .gitignore
+      # - id: markdownlint # Configure in .mdlrc
+      # - id: reek
+      # - id: require-ascii
+      # - id: rubocop
+      # - id: script-must-have-extension
+      # - id: script-must-not-have-extension
+      - id: shellcheck
+      - id: shfmt
 
 ci:
   autoupdate_schedule: weekly

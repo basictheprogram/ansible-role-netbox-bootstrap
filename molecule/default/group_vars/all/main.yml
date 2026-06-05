@@ -1,0 +1,45 @@
+---
+# molecule test fixtures — no real credentials, all sections disabled.
+# Full integration tests require a running NetBox instance. See DESIGN.md §7.
+
+# Connection — points at a non-existent instance; preflight will fail unless
+# a real NetBox is running. Replace with a container address for full testing.
+netbox_url: "http://localhost:8080"
+netbox_api_token: "molecule-test-token"
+netbox_validate_certs: false
+netbox_minimum_version: "4.0.0"
+
+# Bootstrap password — not a real credential; molecule only
+netbox_bootstrap_default_password: "Molecule123!"
+
+# Disable every section so converge runs without a live NetBox API
+netbox_bootstrap_groups: false
+netbox_bootstrap_users: false
+netbox_bootstrap_permissions: false
+netbox_bootstrap_tags: false
+netbox_bootstrap_custom_fields: false
+netbox_bootstrap_custom_links: false
+netbox_bootstrap_webhooks: false
+netbox_bootstrap_export_templates: false
+netbox_bootstrap_tenant_groups: false
+netbox_bootstrap_tenants: false
+netbox_bootstrap_contact_groups: false
+netbox_bootstrap_contact_roles: false
+netbox_bootstrap_contacts: false
+netbox_bootstrap_regions: false
+netbox_bootstrap_site_groups: false
+netbox_bootstrap_sites: false
+netbox_bootstrap_locations: false
+netbox_bootstrap_rack_roles: false
+netbox_bootstrap_device_roles: false
+netbox_bootstrap_platforms: false
+netbox_bootstrap_ipam_roles: false
+netbox_bootstrap_rirs: false
+netbox_bootstrap_aggregates: false
+netbox_bootstrap_vrfs: false
+netbox_bootstrap_route_targets: false
+netbox_bootstrap_vlan_groups: false
+netbox_bootstrap_virtual_machine_types: false
+netbox_bootstrap_cluster_types: false
+netbox_bootstrap_clusters: false
+netbox_bootstrap_rds_instances: false

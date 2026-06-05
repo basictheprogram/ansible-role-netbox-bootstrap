@@ -12,6 +12,7 @@
       Authorization: "Token {{ netbox_api_token }}"
     validate_certs: "{{ netbox_validate_certs }}"
   register: _existing_export_templates
+  no_log: true
 
 - name: Build list of existing export template names
   ansible.builtin.set_fact:
@@ -34,3 +35,4 @@
     label: "{{ item.name }}"
   when: item.name not in _existing_export_template_names
   changed_when: true
+  no_log: true

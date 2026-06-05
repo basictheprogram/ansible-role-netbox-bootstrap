@@ -34,3 +34,24 @@ netbox_tags:
     slug: socket9100
     color: "9e9e9e"
     description: ""
+  # TrueNAS CE / ZFS / disk media
+  - name: truenas
+    slug: truenas
+    color: "0288d1"
+    description: TrueNAS CE (or legacy SCALE/CORE) device
+  - name: zfs
+    slug: zfs
+    color: "1565c0"
+    description: ZFS pool member or ZFS-managed device
+  - name: hdd
+    slug: hdd
+    color: "607d8b"
+    description: Spinning hard disk drive
+  - name: ssd
+    slug: ssd
+    color: "4caf50"
+    description: Solid-state drive (SATA/SAS)
+  - name: nvme
+    slug: nvme
+    color: "9c27b0"
+    description: NVMe solid-state drive

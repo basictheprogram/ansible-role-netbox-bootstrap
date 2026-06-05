@@ -1,9 +1,9 @@
-*.egg-info/
 *.py[cod]
-*.swo
-*.swp
-.DS_Store
+.ansible/
+.cache/
 .env
 .venv/
 __pycache__/
+molecule/.cache/
 venv/
+zzz.diff

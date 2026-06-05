@@ -28,13 +28,25 @@ platforms:
     description: Alpine Linux (commonly used in containers)
 
   # Windows
-  - name: Windows Server
-    slug: windows-server
-    description: Microsoft Windows Server
+  - name: Windows Server 2019
+    slug: windows-server-2019
+    description: Microsoft Windows Server 2019 (EOL October 2029)
 
-  - name: Windows Workstation
-    slug: windows-workstation
-    description: Microsoft Windows desktop OS (workstations and endpoints)
+  - name: Windows Server 2022
+    slug: windows-server-2022
+    description: Microsoft Windows Server 2022 (EOL October 2031)
+
+  - name: Windows Server 2025
+    slug: windows-server-2025
+    description: Microsoft Windows Server 2025 (EOL October 2034)
+
+  - name: Windows 10
+    slug: windows-10
+    description: Microsoft Windows 10 (EOL October 2025)
+
+  - name: Windows 11
+    slug: windows-11
+    description: Microsoft Windows 11
 
   # Hypervisors
   - name: Proxmox VE
@@ -75,10 +87,14 @@ platforms:
     description: OPNsense firewall/router (FreeBSD-based)
 
   # Storage / Appliances
+  - name: TrueNAS CE
+    slug: truenas-ce
+    description: TrueNAS Community Edition (Linux-based NAS OS, rebranded from SCALE in 2024)
+
   - name: TrueNAS SCALE
     slug: truenas-scale
-    description: TrueNAS SCALE (Linux-based NAS OS)
+    description: TrueNAS SCALE (Linux-based NAS OS, pre-2024 CE rebrand)
 
   - name: TrueNAS CORE
     slug: truenas-core
-    description: TrueNAS CORE (FreeBSD-based NAS OS)
+    description: TrueNAS CORE (FreeBSD-based NAS OS, legacy)

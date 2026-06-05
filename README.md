@@ -48,6 +48,15 @@ The role itself does not require any additional Python packages on the control n
 
 ---
 
+## Supported Platforms
+
+| OS     | Versions                   |
+|--------|----------------------------|
+| Debian | bookworm, trixie           |
+| Ubuntu | jammy, noble, resolute     |
+
+---
+
 ## Role Variables
 
 All variables have defaults defined in `defaults/main.yml`.

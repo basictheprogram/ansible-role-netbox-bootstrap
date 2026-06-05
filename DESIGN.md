@@ -391,7 +391,56 @@ dependencies.
 
 ---
 
-## 7. Future Considerations
+## 7. TrueNAS CE Disk Tracking
+
+Physical disks in a TrueNAS CE appliance are modelled in NetBox as **Inventory Items**
+(`dcim.inventoryitem`) on the parent NAS device. This keeps device-level metadata
+(platform, device role, site) separate from per-disk data.
+
+### Platform
+
+| Name | Slug | Notes |
+|---|---|---|
+| `TrueNAS CE` | `truenas-ce` | Linux-based; rebranded from SCALE in 2024 |
+| `TrueNAS SCALE` | `truenas-scale` | Kept for devices created before the CE rebrand |
+| `TrueNAS CORE` | `truenas-core` | Legacy FreeBSD-based; kept for in-service appliances |
+
+### Per-Disk Custom Fields (`dcim.inventoryitem`)
+
+| Field name | Type | Description |
+|---|---|---|
+| `disk_serial_number` | text | Manufacturer serial number |
+| `disk_capacity_gb` | integer | Raw capacity in GB |
+| `disk_type` | select (HDD / SSD / NVMe) | Physical media type |
+| `disk_rpm` | integer | Spindle speed; blank for SSD/NVMe |
+| `disk_smart_status` | select (Pass / Warn / Fail / Unknown) | Last known SMART result |
+| `disk_zfs_pool` | text | ZFS pool name the disk is assigned to |
+| `disk_bay_slot` | text | Physical bay/slot label from TrueNAS (e.g. `da0`, `sda`) |
+
+> The existing `disk_size_gb` custom field on `dcim.device` is a device-level
+> summary (useful for servers/workstations) and is intentionally kept separate
+> from the per-disk `disk_capacity_gb` on inventory items.
+
+### Tags
+
+| Tag | Use |
+|---|---|
+| `truenas` | Applied to the NAS device |
+| `zfs` | ZFS pool member or ZFS-managed device |
+| `hdd` | Spinning disk inventory item |
+| `ssd` | SATA/SAS SSD inventory item |
+| `nvme` | NVMe SSD inventory item |
+
+### Export script
+
+The `export_netbox.py` script already exports `custom_fields` and `tags`. No new
+section or exporter is needed. Disk inventory items themselves are site-specific
+operational data (per DESIGN.md §1 "Not in scope") and are not exported or
+bootstrapped by this role.
+
+---
+
+## 8. Future Considerations
 
 - **`export_netbox.py diff` subcommand** — compare a live instance against committed
   var files and report drift. Useful for detecting manual changes made outside Ansible.

@@ -1,0 +1,41 @@
+---
+dependency:
+  name: galaxy
+  options:
+    requirements-file: requirements.yml
+
+driver:
+  name: docker
+
+platforms:
+  - name: debian-bookworm
+    image: geerlingguy/docker-debian12-ansible:latest
+    pre_build_image: true
+  - name: debian-trixie
+    image: geerlingguy/docker-debian13-ansible:latest
+    pre_build_image: true
+  - name: ubuntu-jammy
+    image: geerlingguy/docker-ubuntu2204-ansible:latest
+    pre_build_image: true
+  - name: ubuntu-noble
+    image: geerlingguy/docker-ubuntu2404-ansible:latest
+    pre_build_image: true
+  - name: ubuntu-resolute
+    image: geerlingguy/docker-ubuntu2604-ansible:latest
+    pre_build_image: true
+
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      callbacks_enabled: timer,profile_tasks
+      # Make the role findable by its directory name (ansible-role-netbox-bootstrap).
+      # Two levels up from molecule/default/ lands in the git_repository/ parent dir.
+      roles_path: ${MOLECULE_PROJECT_DIRECTORY}/../..
+
+verifier:
+  name: testinfra
+  directory: tests/
+  options:
+    v: true
+    p: "no:cacheprovider"

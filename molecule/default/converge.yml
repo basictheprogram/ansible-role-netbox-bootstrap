@@ -1,0 +1,32 @@
+---
+# converge.yml — molecule integration test for ansible-role-netbox-bootstrap.
+#
+# NOTE: This role bootstraps an external NetBox API and does not configure
+# managed hosts. A real NetBox instance (or a containerized one added as a
+# dependency) is required for full end-to-end testing.
+#
+# This converge disables all sections that make API calls and only exercises
+# the preflight + idempotency guard logic. To run full integration tests,
+# start a NetBox container alongside the platform container and set
+# netbox_url / netbox_api_token in group_vars/all/vault.yml.
+- name: Converge
+  hosts: all
+  gather_facts: true
+
+  pre_tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+        force_apt_get: true
+      changed_when: false
+      when: ansible_facts['os_family'] == 'Debian'
+
+    - name: Update dnf cache
+      ansible.builtin.dnf:
+        update_cache: true
+      changed_when: false
+      when: ansible_facts['os_family'] == 'RedHat'
+
+  roles:
+    - role: ansible-role-netbox-bootstrap

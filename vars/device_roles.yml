@@ -1,4 +1,93 @@
 ---
 # device_roles — populated by scripts/export_netbox.py
 # Do not hand-edit; re-run the export script to update.
-device_roles: []
+device_roles:
+
+  # Network
+  - name: Firewall
+    slug: firewall
+    color: "f44336"
+    vm_role: true
+    description: Perimeter or internal firewall (physical or virtual)
+
+  - name: Router
+    slug: router
+    color: "f57c00"
+    vm_role: false
+    description: ISP-provided CPE router (Comcast/Xfinity, CenturyLink, etc.)
+
+  - name: Access Switch
+    slug: access-switch
+    color: "2196f3"
+    vm_role: false
+    description: Layer-2 access-layer switch
+
+  - name: Core Switch
+    slug: core-switch
+    color: "1565c0"
+    vm_role: false
+    description: Layer-3 core or aggregation switch
+
+  - name: Wireless AP
+    slug: wireless-ap
+    color: "4caf50"
+    vm_role: false
+    description: Wireless access point
+
+  # Servers & Compute
+  - name: Hypervisor
+    slug: hypervisor
+    color: "9c27b0"
+    vm_role: false
+    description: Physical host running a hypervisor (ESXi, Proxmox, XCP-ng)
+
+  - name: Linux Server
+    slug: linux-server
+    color: "ff9800"
+    vm_role: true
+    description: Physical or virtual Linux server
+
+  - name: Windows Server
+    slug: windows-server
+    color: "0288d1"
+    vm_role: true
+    description: Physical or virtual Windows Server
+
+  - name: Windows Workstation
+    slug: windows-workstation
+    color: "03a9f4"
+    vm_role: true
+    description: Windows desktop or laptop endpoint (including VDI)
+
+  # Storage
+  - name: NAS
+    slug: nas
+    color: "009688"
+    vm_role: false
+    description: Network-attached storage appliance (TrueNAS, Synology, etc.)
+
+  # Remote Access
+  - name: IP KVM
+    slug: ip-kvm
+    color: "607d8b"
+    vm_role: false
+    description: IP KVM device for remote server access (JetKVM, etc.)
+
+  # Facilities & Power
+  - name: Printer
+    slug: printer
+    color: "9e9e9e"
+    vm_role: false
+    description: Network printer or multifunction device
+
+  - name: UPS
+    slug: ups
+    color: "ffc107"
+    vm_role: false
+    description: Uninterruptible power supply
+
+  - name: PDU
+    slug: pdu
+    color: "795548"
+    vm_role: false
+    description: Rack power distribution unit
