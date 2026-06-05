@@ -32,6 +32,8 @@ netbox_bootstrap_sites: false
 netbox_bootstrap_locations: false
 netbox_bootstrap_rack_roles: false
 netbox_bootstrap_device_roles: false
+netbox_bootstrap_manufacturers: false
+netbox_bootstrap_device_types: false
 netbox_bootstrap_platforms: false
 netbox_bootstrap_ipam_roles: false
 netbox_bootstrap_rirs: false

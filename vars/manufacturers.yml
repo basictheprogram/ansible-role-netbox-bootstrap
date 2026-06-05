@@ -1,0 +1,8 @@
+---
+# manufacturers — populated by scripts/export_netbox.py
+# Do not hand-edit; re-run the export script to update.
+manufacturers:
+
+  - name: Leviton
+    slug: leviton
+    description: Leviton Manufacturing Co.

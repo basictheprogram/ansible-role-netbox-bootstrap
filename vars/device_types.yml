@@ -1,0 +1,19 @@
+---
+# device_types — populated by scripts/export_netbox.py
+# Do not hand-edit; re-run the export script to update.
+device_types:
+
+  # Patch Panels
+  - manufacturer: Leviton
+    model: AMP Cat5 Patch Panel 24-Port 1U
+    slug: leviton-amp-cat5-patch-panel-24-port-1u
+    u_height: 1
+    is_full_depth: false
+    description: Leviton AMP Cat5 24-port 1U patch panel
+
+  - manufacturer: Leviton
+    model: AMP Cat5 Patch Panel 48-Port 2U
+    slug: leviton-amp-cat5-patch-panel-48-port-2u
+    u_height: 2
+    is_full_depth: false
+    description: Leviton AMP Cat5 48-port 2U patch panel

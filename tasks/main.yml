@@ -86,6 +86,14 @@
   ansible.builtin.include_tasks: device_roles.yml
   when: netbox_bootstrap_device_roles | bool
 
+- name: Bootstrap manufacturers
+  ansible.builtin.include_tasks: manufacturers.yml
+  when: netbox_bootstrap_manufacturers | bool
+
+- name: Bootstrap device types
+  ansible.builtin.include_tasks: device_types.yml
+  when: netbox_bootstrap_device_types | bool
+
 - name: Bootstrap platforms
   ansible.builtin.include_tasks: platforms.yml
   when: netbox_bootstrap_platforms | bool

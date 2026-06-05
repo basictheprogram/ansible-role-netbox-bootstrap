@@ -29,6 +29,8 @@ netbox_bootstrap_sites: true
 netbox_bootstrap_locations: true
 netbox_bootstrap_rack_roles: true
 netbox_bootstrap_device_roles: true
+netbox_bootstrap_manufacturers: true
+netbox_bootstrap_device_types: true
 netbox_bootstrap_platforms: true
 netbox_bootstrap_virtual_machine_types: true
 netbox_bootstrap_cluster_types: true
