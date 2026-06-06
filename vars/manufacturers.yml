@@ -3,6 +3,10 @@
 # Do not hand-edit; re-run the export script to update.
 manufacturers:
 
+  - name: Generic
+    slug: generic
+    description: Generic/unbranded or unknown hardware
+
   - name: Leviton
     slug: leviton
     description: Leviton Manufacturing Co.

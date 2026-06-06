@@ -3,6 +3,22 @@
 # Do not hand-edit; re-run the export script to update.
 device_types:
 
+  # Rack Shelves
+  - manufacturer: Generic
+    model: Rack Shelf
+    slug: generic-rack-shelf
+    u_height: 1
+    is_full_depth: false
+    description: Generic 1U rack shelf
+
+  # KVM Switches
+  - manufacturer: Generic
+    model: KVM Switch
+    slug: generic-kvm-switch
+    u_height: 1
+    is_full_depth: false
+    description: Generic KVM switch (replace with actual manufacturer and model)
+
   # Patch Panels
   - manufacturer: Leviton
     model: AMP Cat5 Patch Panel 24-Port 1U

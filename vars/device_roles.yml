@@ -73,6 +73,12 @@ device_roles:
     vm_role: false
     description: IP KVM device for remote server access (JetKVM, etc.)
 
+  - name: KVM Switch
+    slug: kvm-switch
+    color: "546e7a"
+    vm_role: false
+    description: Local KVM switch for shared keyboard/video/mouse access (no IP)
+
   # Facilities & Power
   - name: Printer
     slug: printer
@@ -91,3 +97,10 @@ device_roles:
     color: "795548"
     vm_role: false
     description: Rack power distribution unit
+
+  # Passive
+  - name: Passive
+    slug: passive
+    color: "78909c"
+    vm_role: false
+    description: Passive rack-mount device (shelf, tray, blanking panel, etc.)

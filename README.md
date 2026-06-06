@@ -309,7 +309,7 @@ netbox_bootstrap_default_password: "{{ vault_netbox_bootstrap_default_password }
 Run with:
 
 ```bash
-ansible-playbook bootstrap_netbox.yml --ask-vault-pass
+ansible-playbook realtime.bootstrap_netbox.yml --ask-vault-pass
 ```
 
 ---
@@ -328,4 +328,4 @@ MIT
 
 ## Author
 
-Bob Tanner — [Real Time Enterprises, Inc.](https://www.realtime.net)
+Bob Tanner
