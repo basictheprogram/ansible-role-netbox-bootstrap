@@ -21,13 +21,12 @@ Two companion export scripts snapshot configuration into the YAML variable files
 Install before running the role:
 
 ```bash
-ansible-galaxy collection install netbox.netbox community.general
+ansible-galaxy collection install netbox.netbox
 ```
 
 | Collection          | Purpose                                                  |
 |---------------------|----------------------------------------------------------|
 | `netbox.netbox`     | NetBox API modules (tags, sites, device roles, etc.)     |
-| `community.general` | `collection_version` lookup used in preflight checks     |
 
 ### Python (control node)
 
@@ -68,6 +67,7 @@ All variables have defaults defined in `defaults/main.yml`.
 | `netbox_url`            | `https://netbox.example.com` | Base URL of the target NetBox instance           |
 | `netbox_api_token`      | `{{ vault_netbox_api_token }}`| API token (store in Ansible Vault)              |
 | `netbox_validate_certs` | `true`                       | Validate TLS certificates                        |
+| `netbox_minimum_version`| `4.0.0`                      | Minimum NetBox version required (checked in preflight) |
 
 ### Bootstrap Password
 
@@ -127,6 +127,8 @@ Each bootstrap section can be enabled or disabled independently. All sections ar
 | `netbox_bootstrap_locations`     | `true`  | Locations     |
 | `netbox_bootstrap_rack_roles`    | `true`  | Rack roles    |
 | `netbox_bootstrap_device_roles`  | `true`  | Device roles  |
+| `netbox_bootstrap_manufacturers` | `true`  | Manufacturers |
+| `netbox_bootstrap_device_types`  | `true`  | Device types  |
 | `netbox_bootstrap_platforms`     | `true`  | Platforms     |
 
 #### Tier 5 — IPAM Structure
@@ -233,10 +235,10 @@ Sections are applied in strict dependency order inside `tasks/main.yml`. The ord
 2. **Users & Access** — groups → users → permissions
 3. **Extras** — tags → custom fields → custom links → webhooks → export templates
 4. **Tenancy** — tenant groups → tenants → contact groups → contact roles → contacts
-5. **DCIM structure** — regions → site groups → sites → locations → rack roles → device roles → platforms
-6. **IPAM structure** — IPAM roles → RIRs → aggregates → VRFs → route targets → VLAN groups
-7. **Virtualization** — virtual machine types → cluster types → clusters
-8. **Cloud Inventory** — RDS instances (requires clusters from step 7)
+5. **DCIM structure** — regions → site groups → sites → locations → rack roles → device roles → manufacturers → device types → platforms
+6. **Virtualization** — virtual machine types → cluster types → clusters
+7. **Cloud Inventory** — RDS instances (requires clusters from step 6)
+8. **IPAM structure** — IPAM roles → RIRs → aggregates → VRFs → route targets → VLAN groups
 
 ---
 

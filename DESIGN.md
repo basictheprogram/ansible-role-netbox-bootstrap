@@ -71,6 +71,9 @@ that use them can be created.
 |-----------------|----------------------------------|-----------------------------------------|------------|
 | `tenant_groups` | `/api/tenancy/tenant-groups/`    | `netbox.netbox.netbox_tenant_group`     | collection |
 | `tenants`       | `/api/tenancy/tenants/`          | `netbox.netbox.netbox_tenant`           | collection |
+| `contact_groups`| `/api/tenancy/contact-groups/`   | `netbox.netbox.netbox_contact_group`    | collection |
+| `contact_roles` | `/api/tenancy/contact-roles/`    | `netbox.netbox.netbox_contact_role`     | collection |
+| `contacts`      | `/api/tenancy/contacts/`         | `netbox.netbox.netbox_contact`          | collection |
 
 ### Tier 4 — DCIM Structure
 
@@ -92,11 +95,26 @@ Structural IPAM objects only — no individual IP addresses or reservations.
 
 | Section       | NetBox API endpoint           | Collection module                     | Method     |
 |---------------|-------------------------------|---------------------------------------|------------|
+| `ipam_roles`  | `/api/ipam/roles/`            | `netbox.netbox.netbox_ipam_role`      | collection |
 | `rirs`        | `/api/ipam/rirs/`             | `netbox.netbox.netbox_rir`            | collection |
 | `aggregates`  | `/api/ipam/aggregates/`       | `netbox.netbox.netbox_aggregate`      | collection |
 | `vrfs`        | `/api/ipam/vrfs/`             | `netbox.netbox.netbox_vrf`            | collection |
 | `route_targets` | `/api/ipam/route-targets/`  | `netbox.netbox.netbox_route_target`   | collection |
 | `vlan_groups` | `/api/ipam/vlan-groups/`      | `netbox.netbox.netbox_vlan_group`     | collection |
+
+### Tier 6 — Virtualization
+
+| Section                 | NetBox API endpoint                          | Collection module                      | Method     |
+|--------------------------|-----------------------------------------------|------------------------------------------|------------|
+| `virtual_machine_types` | `/api/virtualization/virtual-machine-types/` | None (added in NetBox 4.6.0; no collection module yet) | `uri` |
+| `cluster_types`         | `/api/virtualization/cluster-types/`         | `netbox.netbox.netbox_cluster_type`    | collection |
+| `clusters`              | `/api/virtualization/clusters/`              | `netbox.netbox.netbox_cluster`         | collection |
+
+### Tier 7 — Cloud Inventory
+
+| Section         | NetBox API endpoint                     | Collection module                      | Method     |
+|------------------|-------------------------------------------|------------------------------------------|------------|
+| `rds_instances`  | `/api/virtualization/virtual-machines/` | `netbox.netbox.netbox_virtual_machine` | collection |
 
 ---
 
@@ -172,6 +190,9 @@ vars/
   export_templates.yml
   tenant_groups.yml
   tenants.yml
+  contact_groups.yml
+  contact_roles.yml
+  contacts.yml
   regions.yml
   site_groups.yml
   sites.yml
@@ -223,6 +244,9 @@ ansible-role-netbox-bootstrap/
     export_templates.yml
     tenant_groups.yml
     tenants.yml
+    contact_groups.yml
+    contact_roles.yml
+    contacts.yml
     regions.yml
     site_groups.yml
     sites.yml
@@ -230,6 +254,11 @@ ansible-role-netbox-bootstrap/
     rack_roles.yml
     device_roles.yml
     platforms.yml
+    virtual_machine_types.yml
+    cluster_types.yml
+    clusters.yml
+    rds_instances.yml
+    ipam_roles.yml
     rirs.yml
     aggregates.yml
     vrfs.yml
@@ -246,6 +275,9 @@ ansible-role-netbox-bootstrap/
     export_templates.yml
     tenant_groups.yml
     tenants.yml
+    contact_groups.yml
+    contact_roles.yml
+    contacts.yml
     regions.yml
     site_groups.yml
     sites.yml
@@ -253,6 +285,11 @@ ansible-role-netbox-bootstrap/
     rack_roles.yml
     device_roles.yml
     platforms.yml
+    virtual_machine_types.yml  # hand-seeded or via export_aws_ec2.py; not in export_netbox.py
+    cluster_types.yml          # hand-seeded; not in export_netbox.py
+    clusters.yml                # hand-seeded; not in export_netbox.py
+    rds_instances.yml          # populated by export_aws_rds.py
+    ipam_roles.yml              # hand-seeded; not in export_netbox.py
     rirs.yml
     aggregates.yml
     vrfs.yml
@@ -274,6 +311,7 @@ ansible-role-netbox-bootstrap/
 netbox_url: "https://netbox.example.com"
 netbox_api_token: "{{ vault_netbox_api_token }}"
 netbox_validate_certs: true
+netbox_minimum_version: "4.0.0"
 
 # Section toggles — set to false to skip a section
 netbox_bootstrap_groups: true
@@ -286,6 +324,9 @@ netbox_bootstrap_webhooks: true
 netbox_bootstrap_export_templates: true
 netbox_bootstrap_tenant_groups: true
 netbox_bootstrap_tenants: true
+netbox_bootstrap_contact_groups: true
+netbox_bootstrap_contact_roles: true
+netbox_bootstrap_contacts: true
 netbox_bootstrap_regions: true
 netbox_bootstrap_site_groups: true
 netbox_bootstrap_sites: true
@@ -293,6 +334,12 @@ netbox_bootstrap_locations: true
 netbox_bootstrap_rack_roles: true
 netbox_bootstrap_device_roles: true
 netbox_bootstrap_platforms: true
+netbox_bootstrap_virtual_machine_types: true
+netbox_bootstrap_cluster_types: true
+netbox_bootstrap_clusters: true
+netbox_bootstrap_rds_instances: true
+netbox_rds_cluster: "AWS RDS"
+netbox_bootstrap_ipam_roles: true
 netbox_bootstrap_rirs: true
 netbox_bootstrap_aggregates: true
 netbox_bootstrap_vrfs: true
@@ -385,6 +432,9 @@ Some objects have hard dependencies that must be respected:
 - `users` reference `groups` — groups must exist first.
 - `custom_fields` may reference `object_types` — those are built-in and always present.
 - `sites` may reference `regions`, `site_groups`, `tenants` — those must exist first.
+- `contacts` reference `contact_groups` and `contact_roles` — those must exist first.
+- `clusters` depend on `cluster_types` — cluster types must exist first.
+- `rds_instances` depend on `clusters` — the cluster referenced by `netbox_rds_cluster` must exist first.
 
 The `tasks/main.yml` include order enforces this. Do not reorder without reviewing
 dependencies.
@@ -446,8 +496,8 @@ bootstrapped by this role.
   var files and report drift. Useful for detecting manual changes made outside Ansible.
 - **`export_netbox.py validate` subcommand** — validate var files against the NetBox
   OpenAPI schema before running the playbook.
-- **Config contexts** — `/api/extras/config-contexts/` could be added as Tier 6 once
-  the structural tiers are stable.
+- **Config contexts** — `/api/extras/config-contexts/` could be added as a future tier
+  once the structural tiers are stable.
 - **Scheduled export** — a cron job or Cowork scheduled task to periodically re-export
   and open a PR if var files have drifted from the live instance.
 - **Multi-instance support** — Click subcommands could support named profiles
