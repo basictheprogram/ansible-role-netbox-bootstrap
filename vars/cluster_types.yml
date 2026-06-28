@@ -3,3 +3,6 @@ cluster_types:
   - name: Cloud
     slug: cloud
     description: AWS and other cloud-provider managed services
+  - name: Proxmox VE
+    slug: proxmox-ve
+    description: On-premises Proxmox VE virtualization clusters

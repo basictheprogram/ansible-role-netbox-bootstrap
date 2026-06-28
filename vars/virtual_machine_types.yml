@@ -394,3 +394,12 @@ virtual_machine_types:
     owner_group: ""
     owner: ""
     comments: ""
+  # --- Proxmox VE ---
+  - name: File Server
+    slug: file-server
+    description: Virtual machine providing file storage/sharing services
+    default_platform: ""
+    tags: []
+    owner_group: ""
+    owner: ""
+    comments: ""
